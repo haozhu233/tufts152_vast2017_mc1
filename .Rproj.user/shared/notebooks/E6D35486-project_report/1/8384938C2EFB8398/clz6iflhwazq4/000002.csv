@@ -1,0 +1,20 @@
+"0","dt = read_csv(""processed_data.csv"") %>%
+  mutate(gate_id = as.character(gate_id))
+"
+"2","Parsed with column specification:
+cols(
+  Timestamp = [34mcol_datetime(format = """")[39m,
+  date = [34mcol_date(format = """")[39m,
+  time = [34mcol_time(format = """")[39m,
+  hr = [32mcol_double()[39m,
+  min = [32mcol_double()[39m,
+  sec = [32mcol_double()[39m,
+  `car-id` = [31mcol_character()[39m,
+  `car-type` = [31mcol_character()[39m,
+  `gate-name` = [31mcol_character()[39m,
+  duration = [32mcol_double()[39m,
+  next_gate = [31mcol_character()[39m,
+  gate_type = [31mcol_character()[39m,
+  gate_id = [32mcol_double()[39m
+)
+"

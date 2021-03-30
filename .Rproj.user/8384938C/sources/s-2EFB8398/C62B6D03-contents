@@ -1,0 +1,134 @@
+library(tidyverse)
+library(hrbrthemes)
+library(ggridges)
+
+dt = read_csv('Lekagul Sensor Data.csv')
+dt = dt %>%
+  separate(Timestamp, c("date", "time"), remove = F, sep = " ") %>%
+  separate(time, c("hr", "min", "sec"), remove = F) %>%
+  group_by(`car-id`) %>%
+  mutate(duration = Timestamp - lag(Timestamp),
+         next_gate = lag(`gate-name`)) %>%
+  ungroup() %>%
+  mutate(duration = as.numeric(duration),
+         gate_type = str_remove(`gate-name`, '[0-9]'),
+         hr = as.numeric(hr), min = as.numeric(min), sec = as.numeric(sec))
+
+dt = dt %>%
+  mutate(gate_id = str_remove(str_remove(str_remove(
+    `gate-name`, '[a-z]*'), '-'), '[a-z]*'),
+    gate_id = ifelse(gate_id == "", "0", gate_id))
+
+write_csv(dt, "processed_data.csv")
+dt %>%
+  group_by(gate_type, gate_id, hr) %>%
+  count() %>%
+  ggplot(aes(x = hr, y = n, fill = gate_id)) +
+  geom_bar(stat = 'identity', position = 'stack') +
+  facet_wrap(~gate_type) +
+  scale_fill_viridis_d() +
+  labs(x = "Time of Day", y = "Count of Visits", fill = "Gate ID") +
+  scale_y_continuous(breaks = c(0, 2000, 4000, 6000)) +
+  theme_ipsum(grid = "XY")
+
+ggsave("gate_type_time_of_day.png")
+
+dt %>%
+  mutate(month = str_remove(date, '-..$')) %>%
+  group_by(gate_type, gate_id, month) %>%
+  count() %>%
+  ggplot(aes(x = month, y = n, fill = gate_id)) +
+  geom_histogram(stat = 'identity', position = 'stack') +
+  facet_wrap(~gate_type) +
+  scale_fill_viridis_d() +
+  scale_x_discrete(breaks = c('2015-05', '2015-11', '2016-05'))+
+  labs(x = "Time of Year", y = "Count of Visits", fill = "Gate ID") +
+  theme_ipsum(grid = "XY")
+ggsave("gate_type_time_of_year.png")
+
+dt %>%
+  mutate(`car-type` = factor(
+    `car-type`, 
+    c(1:2, "2P", 3:6), 
+    c(
+      "2 axle cars",
+      '2 axle truck',
+      '2 axle truck (P)',
+      '3 axle truck',
+      '4+ axle truck',
+      '2 axle bus',
+      '3 axle bus'
+    ))) %>%
+  group_by(gate_type, `car-type`, hr) %>%
+  count() %>%
+  ggplot(aes(x = `car-type`, y = n, fill = `car-type`)) +
+  geom_bar(stat = 'identity') +
+  facet_wrap(~gate_type) +
+  coord_flip() +
+  scale_fill_viridis_d() +
+  labs(x = "Car Types", y = "Count of Visits", fill = "Car Types") +
+  # scale_y_continuous(breaks = c(0, 2000, 4000, 6000)) +
+  theme_ipsum(grid = "XY")
+
+ggsave("hist_cartype_gate_type.png")
+
+dt %>%
+  filter(!is.na(duration)) %>%
+  ggplot(aes(x = duration, y = `car-type`)) +
+  geom_density_ridges2() +
+  scale_x_log10()
+
+dt %>%
+  mutate(path)
+
+write_csv(dt, 'processed_dt.csv')
+
+
+
+
+
+graph_dt = dt %>%
+  select(`gate-name`, next_gate, `car-type`, `car-id`, `date`, time) %>%
+  filter(!is.na(next_gate)) %>%
+  rename(start = `gate-name`, to = next_gate)
+
+  
+
+
+graph = 
+
+graph %>%
+  group_by(start, stop) %>%
+  count()
+write_csv(dt, 'processed_dt.csv')
+
+dt
+
+dt = dt %>%
+  group_by(`car-id`) %>%
+  mutate()
+
+dt %>%
+  filter(!is.na(duration)) %>%
+  ggplot(aes(x = duration)) +
+  geom_histogram() +
+  facet_wrap(~`car-type`, scales = 'free_x')
+
+dt %>%
+  filter(duration > 1E5) %>%
+  mutate(duration_days = duration / 86400) %>%
+  select(duration_days, `car-id`, `path`) %>%
+  View()
+
+dt %>%
+  filter(`car-id` == '20154519024544-322') %>%
+  View()
+
+dt %>%
+  separate(time, c("h", "m", "s")) %>%
+  mutate(h = as.numeric(h), m = as.numeric(h), s = as.numeric(s)) %>%
+  ggplot(aes(x = h)) +
+  geom_histogram()
+
+
+ggsave('duration-path.png', width = 20, height = 20)

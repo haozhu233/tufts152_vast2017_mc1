@@ -1,0 +1,251 @@
+"0","library(tidyverse)"
+"0","library(hrbrthemes)"
+"0","library(Cairo)"
+"0","library(extrafont)"
+"0","extrafont::loadfonts()"
+"2","More than one version of regular/bold/italic found for Roboto Condensed. Skipping setup for this font.
+"
+"2",".SF Compact Display already registered with pdfFonts().
+"
+"2",".SF Compact Rounded already registered with pdfFonts().
+"
+"2",".SF Compact Text already registered with pdfFonts().
+"
+"2",".Keyboard already registered with pdfFonts().
+"
+"2",".New York already registered with pdfFonts().
+"
+"2","System Font already registered with pdfFonts().
+"
+"2",".SF NS Mono already registered with pdfFonts().
+"
+"2",".SF NS Rounded already registered with pdfFonts().
+"
+"2","Andale Mono already registered with pdfFonts().
+"
+"2","More than one version of regular/bold/italic found for Apple Braille. Skipping setup for this font.
+"
+"2","AppleMyungjo already registered with pdfFonts().
+"
+"2","Arial Black already registered with pdfFonts().
+"
+"2","Arial already registered with pdfFonts().
+"
+"2","Arial Narrow already registered with pdfFonts().
+"
+"2","Arial Rounded MT Bold already registered with pdfFonts().
+"
+"2","Arial Unicode MS already registered with pdfFonts().
+"
+"2","Bodoni Ornaments already registered with pdfFonts().
+"
+"2","Bodoni 72 Smallcaps already registered with pdfFonts().
+"
+"2","No regular (non-bold, non-italic) version of . Skipping setup for this font.
+"
+"2","No regular (non-bold, non-italic) version of Brush Script MT. Skipping setup for this font.
+"
+"2","Comic Sans MS already registered with pdfFonts().
+"
+"2","Courier New already registered with pdfFonts().
+"
+"2","No regular (non-bold, non-italic) version of DIN Alternate. Skipping setup for this font.
+"
+"2","No regular (non-bold, non-italic) version of DIN Condensed. Skipping setup for this font.
+"
+"2","Georgia already registered with pdfFonts().
+"
+"2","Impact already registered with pdfFonts().
+"
+"2","Khmer Sangam MN already registered with pdfFonts().
+"
+"2","Lao Sangam MN already registered with pdfFonts().
+"
+"2","Luminari already registered with pdfFonts().
+"
+"2","Microsoft Sans Serif already registered with pdfFonts().
+"
+"2","Noto Sans Avestan already registered with pdfFonts().
+"
+"2","Noto Sans Bamum already registered with pdfFonts().
+"
+"2","Noto Sans Batak already registered with pdfFonts().
+"
+"2","Noto Sans Brahmi already registered with pdfFonts().
+"
+"2","Noto Sans Buginese already registered with pdfFonts().
+"
+"2","Noto Sans Buhid already registered with pdfFonts().
+"
+"2","Noto Sans Carian already registered with pdfFonts().
+"
+"2","Noto Sans Chakma already registered with pdfFonts().
+"
+"2","Noto Sans Cham already registered with pdfFonts().
+"
+"2","Noto Sans Coptic already registered with pdfFonts().
+"
+"2","Noto Sans Cuneiform already registered with pdfFonts().
+"
+"2","Noto Sans Cypriot already registered with pdfFonts().
+"
+"2","Noto Sans EgyptHiero already registered with pdfFonts().
+"
+"2","Noto Sans Glagolitic already registered with pdfFonts().
+"
+"2","Noto Sans Gothic already registered with pdfFonts().
+"
+"2","Noto Sans Hanunoo already registered with pdfFonts().
+"
+"2","Noto Sans ImpAramaic already registered with pdfFonts().
+"
+"2","Noto Sans InsPahlavi already registered with pdfFonts().
+"
+"2","Noto Sans InsParthi already registered with pdfFonts().
+"
+"2","Noto Sans Kaithi already registered with pdfFonts().
+"
+"2","Noto Sans Kayah Li already registered with pdfFonts().
+"
+"2","Noto Sans Kharoshthi already registered with pdfFonts().
+"
+"2","Noto Sans Lepcha already registered with pdfFonts().
+"
+"2","Noto Sans Limbu already registered with pdfFonts().
+"
+"2","Noto Sans Linear B already registered with pdfFonts().
+"
+"2","Noto Sans Lisu already registered with pdfFonts().
+"
+"2","Noto Sans Lycian already registered with pdfFonts().
+"
+"2","Noto Sans Lydian already registered with pdfFonts().
+"
+"2","Noto Sans Mandaic already registered with pdfFonts().
+"
+"2","Noto Sans MeeteiMayek already registered with pdfFonts().
+"
+"2","Noto Sans Mongolian already registered with pdfFonts().
+"
+"2","Noto Sans NewTaiLue already registered with pdfFonts().
+"
+"2","Noto Sans N'Ko already registered with pdfFonts().
+"
+"2","Noto Sans Ogham already registered with pdfFonts().
+"
+"2","Noto Sans Ol Chiki already registered with pdfFonts().
+"
+"2","No regular (non-bold, non-italic) version of Noto Sans Old Italic. Skipping setup for this font.
+"
+"2","Noto Sans OldPersian already registered with pdfFonts().
+"
+"2","Noto Sans OldSouArab already registered with pdfFonts().
+"
+"2","Noto Sans Old Turkic already registered with pdfFonts().
+"
+"2","Noto Sans Osmanya already registered with pdfFonts().
+"
+"2","Noto Sans PhagsPa already registered with pdfFonts().
+"
+"2","Noto Sans Phoenician already registered with pdfFonts().
+"
+"2","Noto Sans Rejang already registered with pdfFonts().
+"
+"2","Noto Sans Runic already registered with pdfFonts().
+"
+"2","Noto Sans Samaritan already registered with pdfFonts().
+"
+"2","Noto Sans Saurashtra already registered with pdfFonts().
+"
+"2","Noto Sans Shavian already registered with pdfFonts().
+"
+"2","Noto Sans Sundanese already registered with pdfFonts().
+"
+"2","Noto Sans Syloti Nagri already registered with pdfFonts().
+"
+"2","Noto Sans Syriac already registered with pdfFonts().
+"
+"2","Noto Sans Tagalog already registered with pdfFonts().
+"
+"2","Noto Sans Tagbanwa already registered with pdfFonts().
+"
+"2","Noto Sans Tai Le already registered with pdfFonts().
+"
+"2","Noto Sans Tai Tham already registered with pdfFonts().
+"
+"2","Noto Sans Tai Viet already registered with pdfFonts().
+"
+"2","Noto Sans Thaana already registered with pdfFonts().
+"
+"2","Noto Sans Tifinagh already registered with pdfFonts().
+"
+"2","Noto Sans Ugaritic already registered with pdfFonts().
+"
+"2","Noto Sans Vai already registered with pdfFonts().
+"
+"2","Noto Sans Yi already registered with pdfFonts().
+"
+"2","Noto Serif Balinese already registered with pdfFonts().
+"
+"2","No regular (non-bold, non-italic) version of Roboto Condensed Light. Skipping setup for this font.
+"
+"2","Tahoma already registered with pdfFonts().
+"
+"2","Times New Roman already registered with pdfFonts().
+"
+"2","Trattatello already registered with pdfFonts().
+"
+"2","Trebuchet MS already registered with pdfFonts().
+"
+"2","Verdana already registered with pdfFonts().
+"
+"2","Webdings already registered with pdfFonts().
+"
+"2","Wingdings already registered with pdfFonts().
+"
+"2","Wingdings 2 already registered with pdfFonts().
+"
+"2","Wingdings 3 already registered with pdfFonts().
+"
+"0","dt = read_csv(""processed_data.csv"") %>%"
+"0","  mutate(gate_id = as.character(gate_id))"
+"2","Parsed with column specification:
+cols(
+  Timestamp = [34mcol_datetime(format = """")[39m,
+  date = [34mcol_date(format = """")[39m,
+  time = [34mcol_time(format = """")[39m,
+  hr = [32mcol_double()[39m,
+  min = [32mcol_double()[39m,
+  sec = [32mcol_double()[39m,
+  `car-id` = [31mcol_character()[39m,
+  `car-type` = [31mcol_character()[39m,
+  `gate-name` = [31mcol_character()[39m,
+  duration = [32mcol_double()[39m,
+  next_gate = [31mcol_character()[39m,
+  gate_type = [31mcol_character()[39m,
+  gate_id = [32mcol_double()[39m
+)
+"
+"0","dt %>%"
+"0","  mutate(`car-type` = factor("
+"0","    `car-type`, "
+"0","    c(1:2, ""2P"", 3:6), "
+"0","    c("
+"0","      ""2 axle cars"","
+"0","      '2 axle truck',"
+"0","      '2 axle truck (P)',"
+"0","      '3 axle truck',"
+"0","      '4+ axle truck',"
+"0","      '2 axle bus',"
+"0","      '3 axle bus'"
+"0","    ))) %>%"
+"0","  group_by(gate_type, `car-type`, hr) %>%"
+"0","  count() %>%"
+"0","  ggplot(aes(x = `car-type`, y = n, fill = `car-type`)) +"
+"0","  geom_bar(stat = 'identity') +"
+"0","  facet_wrap(~gate_type) +"
+"0","  coord_flip() +"
+"0","  scale_fill_viridis_d() +"
+"0","  labs(x = ""Car Types"", y = ""Count of Visits"", fill = ""Car Types"") +"
+"0","  # scale_y_continuous(breaks = c(0, 2000, 4000, 6000)) +"
+"0","  theme_ipsum(grid = ""XY"")"

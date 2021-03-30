@@ -1,0 +1,37 @@
+library(rvest)
+library(xml2)
+library(tidyverse)
+
+pages = lapply(paste0("https://anaconda.org/pytorch/pytorch/files?page=", 1:10), 
+               xml2::read_html)
+
+tables = lapply(pages, function(x) {
+  x %>%
+    xml_child(2) %>%
+    xml_child(2) %>%
+    xml_child(2) %>%
+    xml_child(1) %>%
+    xml_child(9) %>%
+    xml_child(1) %>%
+    xml_child(1) %>%
+    xml_child(4) %>%
+    html_table()
+})
+
+
+tables = bind_rows(tables)
+
+dt = tables %>%
+  mutate(Name = sub('\\|\\n              \\n              ', '', Name),
+         Name = sub('\\_0\\.tar\\.bz2$', '', Name)) %>%
+  separate(Name, c('sys', 'ver'), sep = '/') %>%
+  separate(ver, c('trash', 'ver', 'env'), sep = '-') %>%
+  separate(Size, c('size', 'size_unit'), sep = ' ') %>%
+  mutate(
+    size = as.numeric(size),
+    size = ifelse(size_unit == "MB", size / 1024, size)) %>%
+  select(-trash)
+
+ggplot(dt, aes(x = ver, y = size, color = sys))+
+  geom_point()
+
