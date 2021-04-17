@@ -72,6 +72,13 @@ per_car = per_visit %>%
     total_num_gate = sum(num_gate)
   )
 
+aaa = dt %>%
+  filter(gate_type == "gate" & `car-type` != "2P")
+
+per_car %>%
+  filter(`car-id` %in% unique(aaa$`car-id`)) %>%
+  View()
+
 per_visit = left_join(per_visit, per_car, by = c('car-type', 'car-id'))
 
 write_csv(per_visit, 'per_visit.csv')
