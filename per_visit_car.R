@@ -27,7 +27,7 @@ dt = dt %>%
     hr = lubridate::hour(Timestamp),
     weekday = lubridate::wday(Timestamp),
     gate_type = stringr::str_remove(`gate-name`, '[0-9]$')
-    )
+  )
 
 
 
@@ -78,6 +78,25 @@ aaa = dt %>%
 per_car %>%
   filter(`car-id` %in% unique(aaa$`car-id`)) %>%
   View()
+
+# 1.	2 axle car (or motorcycle)
+# 2.	2 axle truck
+# 3.	3 axle truck
+# 4.	4 axle (and above) truck
+# 5.	2 axle bus
+# 6.	3 axle bus
+
+per_car %>% group_by(`car-type`) %>% count() %>% ungroup() %>%
+  mutate(
+    `car-type-lbl` = factor(`car-type`, c(1:6, "2P"), c(
+      "2 axle car", "2 axle truck", "3 axle truck", "4/more axle truck",
+      "2 axle bus", "3 axle bus", "Park service vehicles "
+    )),
+    p = n / sum(n),
+    x = lag(cumsum(p)),
+    x = ifelse(is.na(x), 0, x)
+  ) %>%
+jsonlite::toJSON()
 
 per_visit = left_join(per_visit, per_car, by = c('car-type', 'car-id'))
 

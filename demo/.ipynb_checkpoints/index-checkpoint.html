@@ -15,6 +15,10 @@
       <svg id="bird" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1280 1280"><g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"><path id="bird_path" stroke-width="50" stroke="#666666" fill="transparent" stroke-dasharray="2500,2500" stroke-opacity="0"/></g>
       </svg>
   </div>
+  <div class="fixed">
+    <svg id="park_map" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 600 600">
+    </svg>
+  </div>
   <div class="idxContainer">
     <a href="#title"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-title"></div></a>
     <a href="#intro"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-intro"></div></a>
@@ -32,7 +36,16 @@
         <h2>Please <strong>scroll down</strong> to see all the visualizations.</h2>
     </section>
     <section id="intro">
-      <h1>aaaaaaaaaa</h1>
+        <h2>Data Description</h2>
+        <br>
+      <h3>Lekagul Preserve</h3>
+      <p>The Boonsong Lekagul Nature Preserve is a roughly 144 sq. miles wilderness recreation area. It was created to help maintain the habitat of wildlife and flora species native to the area. It's open year round to the public and visitors can access the park through its 5 entrances. There are 6 types of checkpoints located on the map, namly 5 Entrances, 9 Camping zones, 9 Gates, 8 General gates, 1 Ranger base for them to have rests, 8 Ranger stops.
+        <p>Note that the 9 gates are not accessable to the public. They are mostly setted up on the paths to the ranger base and ranger stops. <em>Try to hover over the map legend and see</em>.</p>
+        <br>
+      <h3>Park Visitors</h3>
+        <p>There have been a total of 18,708 unique vehicles visiting the part between May 1st, 2015 and May 31st, 2016. A distribution of types of vehicles is shown below. </p>
+        <svg id="car-type-dist" width="100%" height="50px" viewBox="0 0 500 45"></svg>
+        <p>sss</p>
     </section>
     <section id="hp1">
       <h2>Out of those <strong>20</strong> there were <strong>12</strong> people who attended.</h2>
@@ -56,13 +69,16 @@
 
 </div><!-- /graphic -->
   
-  
+  <script src="data.js"></script>
   <script>
-      
-    let bird_path = d3.select("#bird_path");
-    let showBird = () =>{
+    var bird_path = d3.select("#bird_path");
+    var map_svg = d3.select("#park_map");
+    var car_type_svg = d3.select("#car-type-dist");
+    
+//  Bird =====================================================    
+    let showBird = () => {
       bird_path
-        .attr('d', 'M522 12013 c-35 -7 -62 -59 -62 -122 0 -48 -17 -158 -41 -269 -12 -54 -12 -221 0 -275 5 -23 15 -69 21 -102 29 -146 70 -235 199 -430 49 -74 103 -169 120 -209 29 -69 31 -82 29 -178 -2 -91 0 -107 19 -138 12 -19 29 -57 38 -85 19 -56 112 -237 176 -342 55 -89 134 -246 153 -304 9 -26 23 -115 31 -197 16 -157 38 -250 72 -299 11 -15 25 -44 32 -63 17 -52 77 -126 161 -198 179 -153 249 -224 381 -389 142 -178 173 -226 204 -323 27 -82 71 -165 108 -202 33 -34 124 -82 287 -153 123 -53 134 -58 255 -109 306 -131 355 -166 595 -431 70 -77 157 -165 194 -195 46 -38 81 -78 112 -130 25 -41 60 -89 76 -107 17 -17 28 -38 25 -45 -3 -7 -90 -114 -192 -238 -103 -124 -207 -252 -230 -285 -54 -75 -105 -172 -105 -197 0 -59 -52 -104 -257 -221 -73 -42 -163 -100 -200 -130 -84 -66 -148 -109 -328 -218 -217 -130 -412 -273 -696 -511 -42 -35 -108 -89 -149 -120 -115 -90 -201 -221 -204 -310 -1 -57 21 -71 104 -65 74 5 166 36 406 134 93 39 216 86 274 105 58 20 133 46 167 59 35 12 65 21 67 18 3 -2 -75 -85 -172 -184 -344 -350 -546 -605 -527 -664 14 -44 92 -34 184 23 32 19 69 39 82 45 28 10 212 171 404 351 179 169 292 258 511 404 104 70 224 157 267 195 57 52 96 77 150 98 39 15 98 45 129 65 137 89 250 130 264 95 8 -21 -26 -84 -105 -197 -37 -52 -84 -129 -105 -170 -22 -41 -85 -158 -141 -260 -133 -241 -199 -374 -220 -441 -58 -186 -78 -221 -280 -504 -146 -205 -243 -357 -365 -575 -50 -89 -219 -347 -367 -560 -163 -235 -325 -483 -376 -576 -61 -112 -78 -136 -323 -469 -254 -343 -332 -462 -433 -663 -72 -141 -88 -200 -69 -257 8 -25 20 -41 32 -43 42 -8 137 24 286 95 95 46 174 78 206 82 27 4 61 15 74 24 33 23 71 21 152 -8 59 -21 80 -24 137 -19 62 6 70 5 87 -15 69 -80 123 -106 275 -135 65 -12 79 -12 112 1 34 14 44 14 104 -1 l66 -17 52 27 c49 24 59 26 134 19 68 -6 86 -4 108 10 19 13 55 19 137 22 95 4 118 9 160 31 113 61 236 266 411 687 119 286 321 831 445 1205 42 126 169 489 188 535 19 49 78 181 142 320 18 39 54 157 81 264 52 207 90 299 145 354 19 18 82 60 141 91 125 68 215 130 368 257 61 50 169 136 240 192 72 56 198 155 280 221 144 115 279 208 338 234 50 22 24 33 332 -148 72 -42 243 -136 380 -208 l250 -131 140 -26 c324 -60 348 -66 449 -122 16 -9 79 -29 140 -45 61 -16 147 -40 191 -53 44 -13 124 -29 179 -35 171 -20 349 -77 451 -144 130 -86 267 -134 414 -146 134 -11 185 -29 256 -91 68 -59 78 -65 135 -74 57 -8 134 -32 183 -57 21 -10 104 -83 186 -161 81 -78 187 -170 235 -204 48 -34 134 -106 191 -159 312 -291 544 -368 679 -225 l29 30 -34 28 c-19 15 -65 57 -104 94 -38 36 -92 81 -119 99 -67 45 -188 162 -234 224 -76 105 -335 386 -403 439 -20 15 -42 27 -50 27 -42 0 -128 57 -222 147 -203 196 -413 301 -692 348 -84 14 -114 25 -185 65 -103 58 -245 119 -363 156 -49 15 -90 32 -92 38 -1 6 -8 29 -14 51 -37 136 -292 411 -447 482 -56 25 -94 52 -94 67 0 7 39 31 88 53 164 77 217 102 257 125 22 13 125 70 229 128 104 57 224 128 265 158 257 184 824 790 1036 1107 150 224 353 602 430 800 59 151 107 295 135 405 27 105 79 405 94 540 27 243 89 543 142 692 89 249 267 483 494 651 52 39 129 96 170 127 157 118 216 140 380 146 63 2 250 9 415 14 294 11 301 12 338 36 21 14 37 32 37 43 0 64 -305 198 -625 275 -133 32 -169 46 -255 96 -96 56 -161 119 -216 207 -133 217 -390 479 -649 663 -139 98 -377 188 -605 227 -123 21 -436 24 -535 4 -269 -52 -519 -165 -730 -329 -83 -64 -140 -120 -285 -277 -55 -60 -268 -250 -450 -402 -261 -218 -343 -284 -560 -453 -129 -101 -318 -244 -420 -318 -264 -194 -615 -509 -1135 -1022 -399 -393 -629 -638 -1106 -1179 -41 -47 -142 -177 -223 -289 -81 -111 -153 -202 -159 -202 -17 0 -172 141 -251 228 -85 93 -165 201 -245 330 -85 138 -92 182 -67 422 13 135 23 188 47 253 50 135 98 311 124 454 14 74 25 142 25 152 0 10 21 62 46 115 53 111 87 213 110 329 24 116 15 355 -16 452 -29 90 -81 194 -136 271 -53 75 -212 226 -233 222 -9 -2 -27 -25 -40 -51 l-23 -48 20 -57 c12 -31 34 -106 49 -167 26 -104 27 -123 28 -345 0 -207 -3 -249 -23 -350 -70 -345 -220 -683 -455 -1025 -115 -166 -126 -178 -198 -200 -46 -14 -93 -20 -165 -20 -91 0 -106 3 -157 29 -58 29 -120 96 -199 216 -40 60 -232 260 -315 328 -153 125 -247 324 -259 547 -8 165 -43 251 -147 365 -96 105 -173 244 -218 392 -26 86 -228 494 -420 851 -78 144 -147 272 -155 283 -32 51 -64 185 -78 326 -15 144 -16 150 -82 310 -37 90 -74 169 -82 176 -16 12 -20 13 -60 5z')
+        .attr('d', bird_data)
     .transition()
     .duration(1000)
     .attr("stroke-dasharray", "100,100")
@@ -71,234 +87,205 @@
         .attr("style", "cursor: pointer; background-color: black;")
     d3.select("#idx-intro")
         .attr("style", "cursor: pointer; background-color: white;")
-    }
+    };
       
-    let hideBird = () =>{
+    let hideBird = () => {
       bird_path
         .transition()
         .duration(600)
         .attr("stroke-dasharray", "2500,2500")
-        .attr("stroke-opacity", "0.1");
-      setTimeout(() => {bird_path.attr('d', '')}, 600);
+        .attr("stroke-opacity", "0.0");
+//       Entirely remove d if performance is an issue
+//       setTimeout(() => {bird_path.attr('d', '')}, 600);
       d3.select("#idx-title")
         .attr("style", "cursor: pointer; background-color: white;")
       d3.select("#idx-intro")
         .attr("style", "cursor: pointer; background-color: black;")
     };
     
+//  Map ===============================================================  
+    var map_node_color_scale = d3
+      .scale.ordinal()
+      .domain(["0", "1", "2", "3", "4", "5"])
+      .range(["#264653","#2a9d8f","#8ab17d","#e9c46a","#f4a261","#e76f51"]);
+      
+    let showMap = (duration = 1200) => {
+      if (map_svg.select("#map_paths").empty()) {
+        map_svg
+          .append("g")
+          .attr("id", "map_paths")
+          .attr("stroke-opacity", "0.0")
+          .selectAll('path')
+          .data(map_path_data)
+          .enter()
+          .append("path")
+          .attr("d", (d) => d.path)
+          .attr("id", (d) => d.edge)
+          .attr("stroke_width", "2")
+          .attr("stroke", "#CDCDCD")
+          .attr("fill", "transparent");
+        map_svg
+          .append("g")
+          .attr("id", "map_nodes")
+          .selectAll('circle')
+          .data(map_node_data)
+          .enter()
+          .append("circle")
+          .attr("cx", (d) => d.cx)
+          .attr("cy", (d) => d.cy)
+          .attr("id", (d) => d.node)
+          .attr("r", "4")
+          .attr("fill", (d) => map_node_color_scale(d.t))
+          .attr("fill-opacity", "0")
+          .attr("class", (d) => "mapNodeType" + d.t);
+        map_legend = map_svg
+          .append("g")
+          .attr("id", "map_legend")
+          .attr("fill-opacity", "0.0")
+          .attr("opacity", "0.0")
+          .selectAll('circle')
+          .data(gate_legend_dt)
+          .enter();
+        map_legend
+          .append("circle")
+          .attr("cx", "500")
+          .attr("cy", (d) => d.key * 12 + 10)
+          .attr("r", "4")
+          .attr("fill", (d) => d.color)
+          .on("mouseover", handleLegendMouseover)
+          .on("mouseout", handleLegendMouseout);
+        map_legend
+          .append("text")
+          .attr("x", "510")
+          .attr("y", (d) => d.key * 12 + 14)
+          .text((d) => d.gate_type)
+          .on("mouseover", handleLegendMouseover)
+          .on("mouseout", handleLegendMouseout);
+      }
+      map_svg.select("#map_paths")
+        .transition()
+        .ease("cubic")
+        .duration(duration)
+        .attr("stroke-opacity", "1.0");
+      map_svg.select("#map_nodes")
+        .selectAll("circle")
+        .transition()
+        .ease("cubic")
+        .duration(duration)
+        .attr("fill-opacity", "1.0");
+      map_svg.select("#map_legend")
+        .transition()
+        .ease("cubic")
+        .duration(duration)
+        .attr("opacity", "1.0")
+        .attr("fill-opacity", "1.0");
+    };
+      
+    let showMap600 = () => showMap(600);
+      
+    let handleLegendMouseover = (d) => {
+        map_svg.select("#map_nodes")
+              .selectAll(".mapNodeType" + d.key)
+              .transition()
+              .duration(200)
+              .attr("r", "10")
+              .attr("fill-opacity", "0.7");
+    }
+    let handleLegendMouseout = (d) => {
+        map_svg.select("#map_nodes")
+              .selectAll(".mapNodeType" + d.key)
+              .transition()
+              .duration(100)
+              .attr("r", "4")
+              .attr("fill-opacity", "1.0");
+    }
+      
+    let hideMap = () => {
+      map_svg.select("#map_paths")
+        .transition()
+        .duration(600)
+        .attr("stroke-opacity", "0");
+      map_svg.select("#map_nodes")
+        .selectAll("circle")
+        .transition()
+        .duration(600)
+        .attr("fill-opacity", "0.0");
+      map_svg.select("#map_legend")
+        .transition()
+        .duration(600)
+        .attr("opacity", "0.0")
+        .attr("fill-opacity", "0.0");
+    };
+
+//  Car type bar plot ==========================================
+    let showCarCounts = () => {
+      var car_type_x = d3.scale.linear()
+        .rangeRound([0, 460])
+        .domain([0, 1]);
+      var car_type_z = d3.scale.ordinal()
+        .range(viridis_color_7)
+        .domain(["1", "2", "3", "4", "5", "6", "2P"]);
+      console.log(vehicle_counts)
+      car_type_svg_g = car_type_svg
+        .selectAll("bar")
+        .data(vehicle_counts)
+        .enter()
+      car_type_svg_g
+        .append("rect")
+        .attr("x", (d) => car_type_x(d.x))
+        .attr("y", "0")
+        .attr("width", (d) => car_type_x(d.p))
+        .attr("height", "20")
+        .attr("fill", (d) => car_type_z(d.key))
+        .attr("stroke-width", "1")
+        .attr("stroke", "white");
+      car_type_svg_g
+        .append("text")
+        .attr("x", (d, i) => car_type_x(i/7 + 0.1))
+        .attr("y", "40")
+        .text((d) => d.lbl)
+        .attr("stroke", (d) => car_type_z(d.key));
+      car_type_svg_g
+        .append("rect")
+        .attr("x", (d, i) => car_type_x(i/7 + 0.1))
+        .attr("y", "40")
+        .attr("width", (d) => car_type_x(d.p))
+        .attr("height", "20")
+        .text((d) => d.lbl)
+        .attr("stroke", (d) => car_type_z(d.key));
+    }
+    
+    
+    
+    
     showBird();
-
-//     //svg
-//     let svg = d3.select("svg");
-
-
-//     //svg width and height
-//     svg.attr('width',500)
-//         .attr('height',500)
-
-
-//     //set up grid spacing
-//     let spacing = 40;
-//     let rows = 10;
-//     let column = 10;
-//     let randnum = (min,max) => Math.round( Math.random() * (max-min) + min );
-
-
-
-//     //Create an array of objects
-//     let our_data = d3.range(20).map(i => 
-//     ({ 'device': i < 5 ? 'ios' : 'android', 
-//         'city': i < 3 ? 'San Diegan' : 'Out of towners', 
-//         'age': randnum(25, 65)
-//     }));
-
-
-//     //create group and join our data to that group
-//     let group = svg.selectAll('g')
-//       .data(our_data)
-//       .enter()
-//       .append("g")
-
-
-//     //create rectangles
-//     let rects = group.append("rect")
-
-
-//     //city data
-//     d3.selectAll('g')
-//       .append("text")
-//       .text( (d) => d["city"])
-//       .attr("fill", "gray")
-//       .attr("class", "city")
-//       .attr("dx", -500)
-
-
-
-//     //age data
-//     d3.selectAll('g')
-//       .append("text")
-//       .text( (d) => d["age"] )
-//       .attr("fill", "#fff")
-//       .attr("class", "age")
-//       .attr("dx", -500)
-
-
-
-
-
-
-
-
-//     // square grid
-//     let grid = () =>{
-//       rects
-//         .transition()
-//         .delay((d, i) => 10 * i)
-//         .duration(600)
-//         .ease("elastic")
-//         .attr("width", 20)
-//         .attr("height", 20)
-//         .attr("rx", 5)
-//         .attr("ry", 5)
-//         .attr("x", (d, i) => i % column * spacing)
-//         .attr("y", (d, i) => Math.floor(i / 10) % rows * spacing)
-//         .attr("fill", (d, i) => (i < 40 ? "#394147" : "#99c125"))
-//         .attr("opacity", "1")
-//     }
-
-
-
-//     //circle grid
-//     let grid2 = () =>{
-//       rects
-//         .transition()
-//         .delay((d, i) => 10 * i)
-//         .duration(600)
-//         .ease("elastic")
-//         .attr("width", 20)
-//         .attr("height", 20)
-//         .attr("rx", "50%")
-//         .attr("ry", "50%")
-//         .attr("x", (d, i) => i % column * spacing)
-//         .attr("y", (d, i) => Math.floor(i / 10) % rows * spacing)
-//         .attr("fill", (d, i) => (i < 8 ? "none" : "#99c125"))
-//     }
-
-
-//     //divide
-//     let divide = () =>{
-//       rects
-//         .transition()
-//         .delay((d, i) => 10 * i)
-//         .duration(600)
-//         .ease("elastic")
-//         .attr("width", 10)
-//         .attr("height", 10)
-//         .attr("rx", 0)
-//         .attr("ry", 0)
-//         .attr("x", (d, i) => d['device'] == "ios" ? randnum(100, 150) :  randnum(300, 350))
-//         .attr("y", (d, i) => i * 20)
-//         .attr("fill", (d, i) => d['device'] == "ios" ? "#394147": "#99c125")
-//         .attr("opacity", (d,i)=> i < 12 ? 1 : 0 )//only show 12 people
-
-
-
-//         //age
-//         d3.selectAll('text.age')
-//           .transition()
-//           .delay( (d,i) => 40*i ) 
-//           .duration(900)
-//           .ease('elastic')
-//           .attr("dx", -500)
-
-
-//         //city
-//         d3.selectAll('text.city')
-//           .transition()
-//           .delay( (d,i) => 40*i ) 
-//           .duration(900)
-//           .ease('elastic')
-//           .attr("dx", -500)
-//     }
-
-
-
-
-
-//     //bar cart
-//     let barChart = () => {
-//       rects
-//         .attr("rx", 0 )
-//         .attr("ry", 0 )
-//         .transition()
-//         .delay( (d,i) => 20*i ) 
-//         .duration(900)
-//         .ease('elastic')//linear, quad, cubic, sin, exp, circle, elastic, back, bounce
-//         .attr("x", (d,i) => 150 )
-//         .attr("y", (d,i) => i * 17 )
-//         .attr("width", (d,i) => d["age"])
-//         .attr("height", (d,i) => 15)
-//         .attr("fill", (d, i) => (i < 3 ? "#99c125" : "#394147"))
-//         .attr("opacity", 1)
-//         .attr("transform", "translate(0,0) rotate(0)")
-//         .attr("opacity", (d,i)=> i < 12 ? 1 : 0 )//only show 12 people
-
-
-//       //age text
-//       d3.selectAll('text.age')
-//         .transition()
-//         .delay( (d,i) => 20*i ) 
-//         .duration(900)
-//         .ease('elastic')
-//         //align text right
-//         .attr("text-anchor", "start")
-//         .attr("dx", 160)
-//         .attr("dy", (d,i)=> (i * 17) + 12)
-//         .attr("opacity", (d,i)=> i < 12 ? 1 : 0 )//nly show 12 people
-
-
-
-//       //city text
-//       d3.selectAll('text.city')
-//         .transition()
-//         .delay( (d,i) => 20*i ) 
-//         .duration(900)
-//         .ease('elastic')
-//         //align text left
-//         .attr("text-anchor", "end")
-//         .attr("dx", 140)
-//         .attr("dy", (d,i)=> (i * 17) + 12)
-//         .attr("opacity", (d,i)=> i < 12 ? 1 : 0 )//only show 12 people
-
-
-//     }
-
-
-
+    showCarCounts();
+      
+    
 
     //waypoints scroll constructor
-    function scroll(n, offset, func1, func2){
+    function scroll(n, offset, functions1, functions2){
       return new Waypoint({
         element: document.getElementById(n),
         handler: function(direction) {
-           direction == 'down' ? func1() : func2();
+          if (direction == 'down') {
+            for (func in functions1) {
+                functions1[func]();
+            }
+          } else {
+            for (func in functions2) {
+                functions2[func]();
+            }
+          }
         },
         //start 75% from the top of the div
         offset: offset
       });
     };
 
-
-
 //     //triger these functions on page scroll
-    new scroll('intro', '75%', hideBird, showBird);
-//     new scroll('div4', '75%', divide, grid);
+    new scroll('intro', '50%', [hideBird, showMap], [showBird, hideMap]);
 //     new scroll('div6', '75%', barChart, divide);
-
-
-
-//     //start grid on page load
-//     grid();
  
 
   </script>
