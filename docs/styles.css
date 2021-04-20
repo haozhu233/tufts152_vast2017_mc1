@@ -31,6 +31,12 @@ text{
 strong{
   font-weight: 600;
 }
+hr{
+  border: 1pt solid #DDD;
+}
+p{
+  padding-top: 10px;
+}
 #graphic {
   max-width:  1440px;
   width: 100%;
@@ -78,4 +84,45 @@ strong{
 .notes {
   position: fixed:
   
+}
+.lightable-paper {
+  width: 100%;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.lightable-paper tfoot tr td {
+  border: 0;
+}
+
+.lightable-paper tfoot tr:first-child td {
+  border-top: 1px solid #00000020;
+}
+
+.lightable-paper thead tr:last-child th {
+  color: #666;
+  vertical-align: bottom;
+  border-bottom: 1px solid #00000020;
+  line-height: 1.15em;
+  padding: 10px 5px;
+}
+
+.lightable-paper td {
+  vertical-align: middle;
+  border-bottom: 1px solid #00000010;
+  line-height: 1.15em;
+  padding: 7px 5px;
+  text-align: center;
+}
+
+.lightable-paper.lightable-hover tbody tr:hover {
+  background-color: #F9EEC1;
+}
+
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+  background-color: #00000008;
+}
+
+.lightable-paper.lightable-striped tbody td {
+  border: 0;
 }

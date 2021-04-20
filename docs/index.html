@@ -57,6 +57,8 @@
           <h3>t-SNE</h3>
           <p>We start with extracting a set of features for each unique vehicles. These features include number of visits (each visit is defined as the interval between two entries at entrances), total duration of visits, total number of times crossing entrances, camping zones, gates, general gates and ranger stops/base. Then we use t-SNE to reduce the dimension for visualization. In the t-SNE plot, similar patterns of activities are clustered together into groups. Irregular activities are displayed as outliers. </p>
           <p><em>Click any points on the t-SNE plot to begin exploration!</em> You can either look into bigger clusters to generate sense of the activity patterns of this bigger group, or look into outliers and try to catch potential bad guys!</p>
+          <br>
+          <div id="tsneSelection"></div>
         </section>
 
       </div>
@@ -69,6 +71,7 @@
     var map_svg = d3.select("#parkMap");
     var car_type_svg = d3.select("#car-type-dist");
     var tsne_svg = d3.select("#tsne");
+    var tsne_selection = d3.select("#tsneSelection")
     
     //  Bird =====================================================    
     let showBird = () => {
@@ -309,7 +312,8 @@
           .attr("cy", (d) => tsne_y(d.y))
           .attr("r", "5")
           .attr("fill", (d) => tsne_z(d.tp))
-          .attr("style", "cursor: pointer;");
+          .attr("style", "cursor: pointer;")
+          .on("click", handleTsneClick);
         tsne_legend = tsne_svg
         .append("g")
         .attr("id", "tsneLegend")
@@ -361,6 +365,73 @@
       }, 600)
     }
 
+    const tsne_selection_table_header = [
+      '# of Visits', "Total Visit Duration", "# of Camping Zones", 
+      "# of General Gates", "# of Gates", "# of Ranger Stops", "# of Ranger Base"
+    ]
+
+    let handleTsneClick = (d) => {
+      // Clear content
+      tsne_selection.html("")
+
+      // Generate summary info and table
+      tsne_selection.append("div")
+      .html("<strong>Car ID: </strong>" + d.id);
+      tsne_selection.append("div")
+      .html("<strong>Car Type: </strong>" + vehicle_type_dict[d.tp]);
+      tsne_selection_table = tsne_selection.append("table").attr("class", "lightable-paper");
+      tsne_tbl_thead = tsne_selection_table
+      .append("thead")
+      .append("tr");
+      tsne_tbl_tbody = tsne_selection_table
+      .append("tbody")
+      .append("tr");
+      for (i in tsne_selection_table_header) {
+        tsne_tbl_thead.append("th").html(tsne_selection_table_header[i]);
+      }
+      tsne_tbl_tbody.append("td").html(d.v);
+      tsne_tbl_tbody.append("td").html(d.d);
+      tsne_tbl_tbody.append("td").html(d.c);
+      tsne_tbl_tbody.append("td").html(d.gg);
+      tsne_tbl_tbody.append("td").html(d.g);
+      tsne_tbl_tbody.append("td").html(d.rs);
+      tsne_tbl_tbody.append("td").html(d.rb);
+
+      // Visit selection
+      tsne_visit_dropdown = tsne_selection
+      .append("div")
+      .attr("class", "tsneVisitDropdown")
+      .on('change', () => {
+        visit_path = dt_dict[d.id + '-' + tsne_selection.select('select').property('value')];
+        console.log(visit_path);
+      });
+      tsne_visit_dropdown
+      .append("label")
+      .attr("for", "tsneVisit")
+      .html("Choose a visit:");
+
+      tsne_visit_dropdown_choices = tsne_visit_dropdown
+      .append("select")
+      .attr("name", "tsneVisit")
+      .attr("id", "tsneVisit");
+
+      for (i in dt_time_dict[d.id]) {
+        tsne_visit_dropdown_choices
+        .append("option")
+        .attr("value", dt_time_dict[d.id][i]['v'])
+        .html(dt_time_dict[d.id][i]['t']);
+      }
+
+      tsne_selection.append("div").attr("id", "tsnePathPlot");
+
+    }
+
+    // let handleTsneTimeChange = (d) => {
+    //   selectValue = tsne_selection.select('select').property('value');
+    //   console.log(d)
+
+    //   tsne_selection.append("div").html(selectValue);
+    // }
 
 
 
