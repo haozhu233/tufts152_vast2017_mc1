@@ -60,7 +60,7 @@ strong{
   position: fixed;
   max-width: 500px;
   height: 500px;
-  top: 100px;
+  top: calc((100% - 500px) / 2);
   left: 100px
 }
 .idxContainer {

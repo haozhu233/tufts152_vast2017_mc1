@@ -4,250 +4,369 @@
   <script src="d3.v3.min.js"></script>
   <script src="noframework.waypoints.js"></script>
   <link rel="stylesheet" href="styles.css">
-<!--   <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"> -->
+  <!--   <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"> -->
 </head>
 
 <body>
   <div class="notes">
   </div>
   <div id="graphic">
-  <div class="fixed">
-      <svg id="bird" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1280 1280"><g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"><path id="bird_path" stroke-width="50" stroke="#666666" fill="transparent" stroke-dasharray="2500,2500" stroke-opacity="0"/></g>
+    <div class="fixed">
+      <svg id="bird" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1280 1280"><g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"><path id="birdPath" stroke-width="50" stroke="#666666" fill="transparent" stroke-dasharray="2500,2500" stroke-opacity="0"/></g>
       </svg>
-  </div>
-  <div class="fixed">
-    <svg id="park_map" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 600 600">
-    </svg>
-  </div>
-  <div class="idxContainer">
-    <a href="#title"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-title"></div></a>
-    <a href="#intro"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-intro"></div></a>
-    <a href="#hp1"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-hp1"></div></a>
-    <a href="#hp2"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-hp2"></div></a>
-    <a href="#hp3"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-hp3"></div></a>
-    <a href="#hp4"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-hp4"></div></a>
-  </div> 
-  <div class="container">
-    <section id="title">
+    </div>
+    <div class="fixed">
+      <svg id="parkMap" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 600 600">
+      </svg>
+    </div>
+    <div class="fixed">
+      <svg id="tsne" width="0" height="0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 600 600">
+      </svg>
+    </div>
+    <div class="idxContainer">
+      <a href="#title"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-title"></div></a>
+      <a href="#intro"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-intro"></div></a>
+      <a href="#pattern"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-pattern"></div></a>
+      <a href="#hp2"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-hp2"></div></a>
+      <a href="#hp3"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-hp3"></div></a>
+      <a href="#hp4"><div class="idx" style="cursor: pointer; background-color: white;" id="idx-hp4"></div></a>
+    </div> 
+    <div class="container">
+      <section id="title">
         <h3>VAST Challenge 2017 MC1</h3>
         <p>Made by <em>Hao Zhu, Gerard Frasca, Hongjie Wang</em></p>
         <p>as a class project in COMP 152VA at Tufts</p>
-      <h2>The number of nesting pairs of the Rose-Crested Blue Pipit has been found decreasing in the Boonsong Lekagul Nature Preserve. In this report, we use visual analytics to investigate possible causes using the park traffic data.</h2>
+        <h2>The number of nesting pairs of the Rose-Crested Blue Pipit has been found decreasing in the Boonsong Lekagul Nature Preserve. In this report, we use visual analytics to investigate possible causes using the park traffic data.</h2>
         <h2>Please <strong>scroll down</strong> to see all the visualizations.</h2>
-    </section>
-    <section id="intro">
+      </section>
+      <section id="intro">
         <h2>Data Description</h2>
         <br>
-      <h3>Lekagul Preserve</h3>
-      <p>The Boonsong Lekagul Nature Preserve is a roughly 144 sq. miles wilderness recreation area. It was created to help maintain the habitat of wildlife and flora species native to the area. It's open year round to the public and visitors can access the park through its 5 entrances. There are 6 types of checkpoints located on the map, namly 5 Entrances, 9 Camping zones, 9 Gates, 8 General gates, 1 Ranger base for them to have rests, 8 Ranger stops.
-        <p>Note that the 9 gates are not accessable to the public. They are mostly setted up on the paths to the ranger base and ranger stops. <em>Try to hover over the map legend and see</em>.</p>
-        <br>
-      <h3>Park Visitors</h3>
-        <p>There have been a total of 18,708 unique vehicles visiting the part between May 1st, 2015 and May 31st, 2016. A distribution of types of vehicles is shown below. </p>
-        <svg id="car-type-dist" width="100%" height="50px" viewBox="0 0 500 45"></svg>
-        <p>Most visitors came to the park during the summer season.</p>
-        <svg id="seasonal-effect"></svg>
-    </section>
-    
-  </div>
+        <h3>Lekagul Preserve</h3>
+        <p>The Boonsong Lekagul Nature Preserve is a roughly 144 sq. miles wilderness recreation area. It was created to help maintain the habitat of wildlife and flora species native to the area. It's open year round to the public and visitors can access the park through its 5 entrances. There are 6 types of checkpoints located on the map, namly 5 Entrances, 9 Camping zones, 9 Gates, 8 General gates, 1 Ranger base for them to have rests, 8 Ranger stops.
+          <p>Note that the 9 gates are not accessable to the public. They are mostly setted up on the paths to the ranger base and ranger stops. <em>Try to hover over the map legend and highlight them</em>.</p>
+          <br>
+          <h3>Park Visitors</h3>
+          <p>There have been a total of 18,708 unique vehicles visiting the part between May 1st, 2015 and May 31st, 2016. A breakdown of all 7 types of vehicles is shown below. </p>
+          <svg id="car-type-dist" width="100%" height="65px" viewBox="0 0 500 60"></svg>
+          <!-- <p>Most visitors came to the park during the summer season.</p> -->
+          <!-- <svg id="seasonal-effect"></svg> -->
+        </section>
+        <section id="pattern">
+          <h2>Patterns of life</h2>
+          <h3>t-SNE</h3>
+          <p>We start with extracting a set of features for each unique vehicles. These features include number of visits (each visit is defined as the interval between two entries at entrances), total duration of visits, total number of times crossing entrances, camping zones, gates, general gates and ranger stops/base. Then we use t-SNE to reduce the dimension for visualization. In the t-SNE plot, similar patterns of activities are clustered together into groups. Irregular activities are displayed as outliers. </p>
+          <p><em>Click any points on the t-SNE plot to begin exploration!</em> You can either look into bigger clusters to generate sense of the activity patterns of this bigger group, or look into outliers and try to catch potential bad guys!</p>
+        </section>
 
-  <!-- svg 
-  <div class="fixed"><svg id="viz" width="100%" height="100%"></svg></div> -->
+      </div>
 
-</div><!-- /graphic -->
+  </div><!-- /graphic -->
   
   <script src="data.js"></script>
   <script>
-    var bird_path = d3.select("#bird_path");
-    var map_svg = d3.select("#park_map");
+    var bird_path = d3.select("#birdPath");
+    var map_svg = d3.select("#parkMap");
     var car_type_svg = d3.select("#car-type-dist");
+    var tsne_svg = d3.select("#tsne");
     
-//  Bird =====================================================    
+    //  Bird =====================================================    
     let showBird = () => {
       bird_path
-        .attr('d', bird_data)
-    .transition()
-    .duration(1000)
-    .attr("stroke-dasharray", "100,100")
-    .attr("stroke-opacity", "1.0");
-    d3.select("#idx-title")
-        .attr("style", "cursor: pointer; background-color: black;")
-    d3.select("#idx-intro")
-        .attr("style", "cursor: pointer; background-color: white;")
-    };
-      
-    let hideBird = () => {
-      bird_path
-        .transition()
-        .duration(600)
-        .attr("stroke-dasharray", "2500,2500")
-        .attr("stroke-opacity", "0.0");
-//       Entirely remove d if performance is an issue
-//       setTimeout(() => {bird_path.attr('d', '')}, 600);
+      .attr('d', bird_data)
+      .transition()
+      .duration(1000)
+      .attr("stroke-dasharray", "100,100")
+      .attr("stroke-opacity", "1.0");
       d3.select("#idx-title")
-        .attr("style", "cursor: pointer; background-color: white;")
+      .attr("style", "cursor: pointer; background-color: black;")
       d3.select("#idx-intro")
-        .attr("style", "cursor: pointer; background-color: black;")
-    };
-    
-//  Map ===============================================================  
-    var map_node_color_scale = d3
-      .scale.ordinal()
-      .domain(["0", "1", "2", "3", "4", "5"])
-      .range(["#264653","#2a9d8f","#8ab17d","#e9c46a","#f4a261","#e76f51"]);
-      
-    let showMap = (duration = 1200) => {
-      if (map_svg.select("#map_paths").empty()) {
-        map_svg
-          .append("g")
-          .attr("id", "map_paths")
-          .attr("stroke-opacity", "0.0")
-          .selectAll('path')
-          .data(map_path_data)
-          .enter()
-          .append("path")
-          .attr("d", (d) => d.path)
-          .attr("id", (d) => d.edge)
-          .attr("stroke_width", "2")
-          .attr("stroke", "#CDCDCD")
-          .attr("fill", "transparent");
-        map_svg
-          .append("g")
-          .attr("id", "map_nodes")
-          .selectAll('circle')
-          .data(map_node_data)
-          .enter()
-          .append("circle")
-          .attr("cx", (d) => d.cx)
-          .attr("cy", (d) => d.cy)
-          .attr("id", (d) => d.node)
-          .attr("r", "4")
-          .attr("fill", (d) => map_node_color_scale(d.t))
-          .attr("fill-opacity", "0")
-          .attr("class", (d) => "mapNodeType" + d.t);
-        map_legend = map_svg
-          .append("g")
-          .attr("id", "map_legend")
-          .attr("fill-opacity", "0.0")
-          .attr("opacity", "0.0")
-          .selectAll('circle')
-          .data(gate_legend_dt)
-          .enter();
-        map_legend
-          .append("circle")
-          .attr("cx", "500")
-          .attr("cy", (d) => d.key * 12 + 10)
-          .attr("r", "4")
-          .attr("fill", (d) => d.color)
-          .on("mouseover", handleLegendMouseover)
-          .on("mouseout", handleLegendMouseout);
-        map_legend
-          .append("text")
-          .attr("x", "510")
-          .attr("y", (d) => d.key * 12 + 14)
-          .text((d) => d.gate_type)
-          .on("mouseover", handleLegendMouseover)
-          .on("mouseout", handleLegendMouseout);
-      }
-      map_svg.select("#map_paths")
-        .transition()
-        .ease("cubic")
-        .duration(duration)
-        .attr("stroke-opacity", "1.0");
-      map_svg.select("#map_nodes")
-        .selectAll("circle")
-        .transition()
-        .ease("cubic")
-        .duration(duration)
-        .attr("fill-opacity", "1.0");
-      map_svg.select("#map_legend")
-        .transition()
-        .ease("cubic")
-        .duration(duration)
-        .attr("opacity", "1.0")
-        .attr("fill-opacity", "1.0");
-    };
-      
-    let showMap600 = () => showMap(600);
-      
-    let handleLegendMouseover = (d) => {
-        map_svg.select("#map_nodes")
-              .selectAll(".mapNodeType" + d.key)
-              .transition()
-              .duration(200)
-              .attr("r", "10")
-              .attr("fill-opacity", "0.7");
-    }
-    let handleLegendMouseout = (d) => {
-        map_svg.select("#map_nodes")
-              .selectAll(".mapNodeType" + d.key)
-              .transition()
-              .duration(100)
-              .attr("r", "4")
-              .attr("fill-opacity", "1.0");
-    }
-      
-    let hideMap = () => {
-      map_svg.select("#map_paths")
-        .transition()
-        .duration(600)
-        .attr("stroke-opacity", "0");
-      map_svg.select("#map_nodes")
-        .selectAll("circle")
-        .transition()
-        .duration(600)
-        .attr("fill-opacity", "0.0");
-      map_svg.select("#map_legend")
-        .transition()
-        .duration(600)
-        .attr("opacity", "0.0")
-        .attr("fill-opacity", "0.0");
+      .attr("style", "cursor: pointer; background-color: white;")
     };
 
-//  Car type bar plot ==========================================
-    let showCarCounts = () => {
-      var car_type_x = d3.scale.linear()
-        .rangeRound([0, 460])
-        .domain([0, 1]);
-      var car_type_z = d3.scale.ordinal()
-        .range(viridis_color_7)
-        .domain(["1", "2", "3", "4", "5", "6", "2P"]);
-      console.log(vehicle_counts)
-      car_type_svg_g = car_type_svg
-        .selectAll("bar")
-        .data(vehicle_counts)
+    let hideBird = () => {
+      bird_path
+      .transition()
+      .duration(400)
+      .attr("stroke-dasharray", "2500,2500")
+      .attr("stroke-opacity", "0.0");
+      //       Entirely remove d if performance is an issue
+      //       setTimeout(() => {bird_path.attr('d', '')}, 600);
+    };
+
+    //  Map ===============================================================  
+    var map_node_color_scale = d3
+    .scale.ordinal()
+    .domain(["0", "1", "2", "3", "4", "5"])
+    .range(["#264653","#2a9d8f","#8ab17d","#e9c46a","#f4a261","#e76f51"]);
+
+    let showMap = (duration = 600) => {
+      if (map_svg.select("#mapPaths").empty()) {
+        map_svg
+        .append("g")
+        .attr("id", "mapPaths")
+        .attr("stroke-opacity", "0.0")
+        .selectAll('path')
+        .data(map_path_data)
         .enter()
+        .append("path")
+        .attr("d", (d) => d.path)
+        .attr("id", (d) => d.edge)
+        .attr("stroke_width", "2")
+        .attr("stroke", "#CDCDCD")
+        .attr("fill", "transparent");
+      };
+      map_svg.select("#mapPaths")
+      .transition()
+      .ease("cubic")
+      .duration(duration)
+      .attr("stroke-opacity", "1.0");
+      d3.select("#idx-title")
+      .attr("style", "cursor: pointer; background-color: white;")
+      d3.select("#idx-pattern")
+      .attr("style", "cursor: pointer; background-color: white;")
+      d3.select("#idx-intro")
+      .attr("style", "cursor: pointer; background-color: black;")
+    };
+
+    let hideMap = () => {
+      map_svg.select("#mapPaths")
+      .transition()
+      .duration(600)
+      .attr("stroke-opacity", "0");
+    };
+
+    let showMapNodes = (duration = 600) => {
+      if (map_svg.select("#mapNodes").empty()) {
+        map_svg
+        .append("g")
+        .attr("id", "mapNodes")
+        .selectAll('circle')
+        .data(map_node_data)
+        .enter()
+        .append("circle")
+        .attr("cx", (d) => d.cx)
+        .attr("cy", (d) => d.cy)
+        .attr("id", (d) => d.node)
+        .attr("r", "4")
+        .attr("fill", (d) => map_node_color_scale(d.t))
+        .attr("fill-opacity", "0")
+        .attr("class", (d) => "mapNodeType" + d.t)
+        .on("mouseover", handleNodeMouseover)
+        .on("mouseout", handleNodeMouseout);
+        map_legend = map_svg
+        .append("g")
+        .attr("id", "mapLegend")
+        .attr("fill-opacity", "0.0")
+        .attr("opacity", "0.0")
+        .selectAll('circle')
+        .data(gate_legend_dt)
+        .enter();
+        map_legend
+        .append("circle")
+        .attr("cx", "500")
+        .attr("cy", (d) => d.key * 12 + 10)
+        .attr("r", "4")
+        .attr("fill", (d) => d.color)
+        .on("mouseover", handleLegendMouseover)
+        .on("mouseout", handleLegendMouseout);
+        map_legend
+        .append("text")
+        .attr("x", "510")
+        .attr("y", (d) => d.key * 12 + 14)
+        .text((d) => d.gate_type)
+        .on("mouseover", handleLegendMouseover)
+        .on("mouseout", handleLegendMouseout);
+      };
+      map_svg.select("#mapNodes")
+      .selectAll("circle")
+      .transition()
+      .ease("cubic")
+      .duration(duration)
+      .attr("fill-opacity", "1.0");
+      map_svg.select("#mapLegend")
+      .transition()
+      .ease("cubic")
+      .duration(duration)
+      .attr("opacity", "1.0")
+      .attr("fill-opacity", "1.0");
+    };
+
+    let handleNodeMouseover = (d) => {
+      map_svg.append("text")
+      .attr("x", parseInt(d.cx) + 8)
+      .attr("y", parseInt(d.cy) + 3)
+      .attr("id", "mapNodeMouse-" + d.node)
+      .text(d.node);
+    }
+    let handleNodeMouseout = (d) => {
+      map_svg.select("#mapNodeMouse-" + d.node).remove();
+
+    };
+
+    let handleLegendMouseover = (d) => {
+      map_svg.select("#mapNodes")
+      .selectAll(".mapNodeType" + d.key)
+      .transition()
+      .duration(200)
+      .attr("r", "10")
+      .attr("fill-opacity", "0.7");
+    }
+    let handleLegendMouseout = (d) => {
+      map_svg.select("#mapNodes")
+      .selectAll(".mapNodeType" + d.key)
+      .transition()
+      .duration(100)
+      .attr("r", "4")
+      .attr("fill-opacity", "1.0");
+    };
+
+    let hideMapNodes = () => {
+      map_svg.select("#mapNodes")
+      .selectAll("circle")
+      .transition()
+      .duration(600)
+      .attr("fill-opacity", "0.0");
+      map_svg.select("#mapLegend")
+      .transition()
+      .duration(600)
+      .attr("opacity", "0.0")
+      .attr("fill-opacity", "0.0");
+    };
+
+
+
+    //  Car type bar plot ==========================================
+    var car_type_x = d3.scale.linear()
+      .rangeRound([0, 460])
+      .domain([0, 1]);
+    var car_type_z = d3.scale.ordinal()
+      .range(viridis_color_7)
+      .domain(["1", "2", "3", "4", "5", "6", "2P"]);
+    let showCarCounts = () => {
+      car_type_svg_g = car_type_svg
+      .selectAll("bar")
+      .data(vehicle_counts)
+      .enter()
       car_type_svg_g
         .append("rect")
         .attr("x", (d) => car_type_x(d.x))
-        .attr("y", "0")
+        .attr("y", "15")
         .attr("width", (d) => car_type_x(d.p))
         .attr("height", "25")
         .attr("fill", (d) => car_type_z(d.key))
         .attr("stroke-width", "1")
-        .attr("stroke", "white");
+        .attr("stroke", "white")
+        .on("mouseover", (d) => {
+          car_type_svg.append("text")
+            .attr("x", car_type_x(d.x + d.p / 2 - 0.06))
+            .attr("y", "10")
+            .attr("id", "cartype-" + d.key)
+            .text(d.n + " (" + d.p * 100 + "%)");
+        })
+        .on("mouseout", (d) => {
+          car_type_svg.select("#cartype-" + d.key).remove();
+        });
       car_type_svg_g
-        .append("text")
-        .attr("x", (d, i) => car_type_x(i/7 + 0.017))
-        .attr("y", "40")
-        .text((d) => d.lbl)
-        .attr("stroke", (d) => car_type_z(d.key));
+      .append("text")
+      .attr("x", (d, i) => car_type_x(i/7 + 0.017))
+      .attr("y", "55")
+      .text((d) => d.lbl)
+      .attr("stroke", (d) => car_type_z(d.key));
       car_type_svg_g
-        .append("rect")
-        .attr("x", (d, i) => car_type_x(i/7))
-        .attr("y", "34")
-        .attr("width", "5")
-        .attr("height", "5")
-        .attr("fill", (d) => car_type_z(d.key));
+      .append("rect")
+      .attr("x", (d, i) => car_type_x(i/7))
+      .attr("y", "49")
+      .attr("width", "5")
+      .attr("height", "5")
+      .attr("fill", (d) => car_type_z(d.key));
     }
-    
-    
-    
-    
+
+    // t-SNE plot =======================================
+    var tsne_x = d3.scale.linear()
+      .rangeRound([0, 600])
+      .domain([-85, 85]);
+    var tsne_y = d3.scale.linear()
+      .rangeRound([0, 600])
+      .domain([-85, 85]);
+    var tsne_z = d3.scale.ordinal()
+      .range(viridis_color_7)
+      .domain(["1", "2", "3", "4", "5", "6", "2P"]);
+
+    let showTSNE = () => {
+      if (tsne_svg.attr("width") == "0") {
+        tsne_svg
+        .attr("width", "500")
+        .attr("height", "500");
+      }
+      if (tsne_svg.select("#tsneDots").empty()) {
+        tsne_svg.append("g")
+          .attr("id", "tsneDots")
+          .attr("fill-opacity", "0")
+          .selectAll("circle").data(per_car).enter()
+          .append("circle")
+          .attr("cx", (d) => tsne_x(d.x))
+          .attr("cy", (d) => tsne_y(d.y))
+          .attr("r", "5")
+          .attr("fill", (d) => tsne_z(d.tp))
+          .attr("style", "cursor: pointer;");
+        tsne_legend = tsne_svg
+        .append("g")
+        .attr("id", "tsneLegend")
+        .attr("fill-opacity", "0.0")
+        .attr("opacity", "0.0")
+        .selectAll('circle')
+        .data(vehicle_counts)
+        .enter();
+        tsne_legend
+        .append("circle")
+        .attr("cx", "500")
+        .attr("cy", (d, i) => i * 12 + 10)
+        .attr("r", "4")
+        .attr("fill", (d) => tsne_z(d.key));
+        tsne_legend
+        .append("text")
+        .attr("x", "510")
+        .attr("y", (d, i) => i * 12 + 14)
+        .text((d) => d.lbl);
+      }
+      tsne_svg.select("#tsneDots")
+        .transition()
+        .duration(600)
+        .attr("fill-opacity", "0.5");
+      tsne_svg.select("#tsneLegend")
+      .transition()
+      .duration(600)
+      .attr("opacity", "1.0")
+      .attr("fill-opacity", "1.0")
+      d3.select("#idx-pattern")
+      .attr("style", "cursor: pointer; background-color: black;")
+      d3.select("#idx-intro")
+      .attr("style", "cursor: pointer; background-color: white;")
+    }
+
+    let hideTSNE = () => {
+      tsne_svg.select("#tsneDots")
+        .transition()
+        .duration(600)
+        .attr("fill-opacity", "0.0");
+      tsne_svg.select("#tsneLegend")
+      .transition()
+      .duration(600)
+      .attr("opacity", "0.0")
+      .attr("fill-opacity", "0.0");
+
+      setTimeout(() => {
+        tsne_svg.attr("width", "0").attr("height", "0");
+      }, 600)
+    }
+
+
+
+
     showBird();
     showCarCounts();
-      
-    
+
 
     //waypoints scroll constructor
     function scroll(n, offset, functions1, functions2){
@@ -256,11 +375,11 @@
         handler: function(direction) {
           if (direction == 'down') {
             for (func in functions1) {
-                functions1[func]();
+              functions1[func]();
             }
           } else {
             for (func in functions2) {
-                functions2[func]();
+              functions2[func]();
             }
           }
         },
@@ -269,10 +388,15 @@
       });
     };
 
-//     //triger these functions on page scroll
-    new scroll('intro', '50%', [hideBird, showMap], [showBird, hideMap]);
-//     new scroll('div6', '75%', barChart, divide);
- 
+    // triger these functions on page scroll
+    new scroll('intro', '50%', 
+      [hideBird, showMap, showMapNodes], 
+      [showBird, hideMap, hideMapNodes]);
+    new scroll('pattern', '50%', 
+      [hideMap, hideMapNodes, showTSNE],
+      [showMap, showMapNodes, hideTSNE]);
+    // new scroll('div6', '75%', barChart, divide);
+
 
   </script>
 </body>

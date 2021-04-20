@@ -72,6 +72,7 @@ per_car = per_visit %>%
     total_num_gate = sum(num_gate)
   )
 
+
 aaa = dt %>%
   filter(gate_type == "gate" & `car-type` != "2P")
 
@@ -87,18 +88,61 @@ per_car %>%
 # 6.	3 axle bus
 
 per_car %>% group_by(`car-type`) %>% count() %>% ungroup() %>%
+  rename(key = `car-type`) %>%
   mutate(
-    `car-type-lbl` = factor(`car-type`, c(1:6, "2P"), c(
+    lbl = factor(key, c(1:6, "2P"), c(
       "2 axle car", "2 axle truck", "3 axle truck", "4/more axle truck",
       "2 axle bus", "3 axle bus", "Park service vehicles "
-    )),
+    ))) %>%
+  arrange(lbl) %>%
+  mutate(
     p = n / sum(n),
     x = lag(cumsum(p)),
     x = ifelse(is.na(x), 0, x)
   ) %>%
 jsonlite::toJSON()
 
+daily_visitor = per_visit %>%
+  group_by(`car-type`, `car-id`, visit) %>%
+  nest() %>%
+  mutate(data = map(data, ~seq(as_date(.x$start_time[1]), as_date(.x$end_time[1]), by = 1))) %>%
+  unnest(cols = c(data))
+
+daily_type_count = daily_visitor %>%
+  group_by(data, `car-type`) %>%
+  count()
+
+daily_type_count %>%
+  ggplot(aes(x = data, y = n, fill = `car-type`)) +
+  geom_bar(stat = "identity")
+
+daily_visitor %>%
+  group_by(`car-type`, `car-id`, visit) %>%
+  count() %>%
+  ungroup() %>%
+  group_by(`car-type`) %>%
+  summarize(
+    mean = mean(n),
+    sd = sd(n)
+  )
+
+tsne = jsonlite::read_json("docs/tsne.json")
+
+aaa = map_df(tsne, ~tibble(x = .x$x, y = .x$y))
+
+per_car$x = aaa$x
+per_car$y = aaa$y
+
+per_car_lite = per_car
+per_car_lite$total_stay_duration = round(per_car_lite$total_stay_duration, 1)
+per_car_lite$x = round(per_car_lite$x, 2)
+per_car_lite$y = round(per_car_lite$y, 2)
+names(per_car_lite) = c("tp", "id", "v", "d", "ts", "gg",
+                        "rs", "c", "rb", "g", "x", "y")
+jsonlite::write_json(per_car_lite, "per_car.json")
+
 per_visit = left_join(per_visit, per_car, by = c('car-type', 'car-id'))
 
 write_csv(per_visit, 'per_visit.csv')
 write_csv(per_car, 'per_car.csv')
+
