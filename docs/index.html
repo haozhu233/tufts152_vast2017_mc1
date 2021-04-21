@@ -12,15 +12,15 @@
   </div>
   <div id="graphic">
     <div class="fixed">
-      <svg id="bird" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1280 1280"><g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"><path id="birdPath" stroke-width="50" stroke="#666666" fill="transparent" stroke-dasharray="2500,2500" stroke-opacity="0"/></g>
+      <svg id="bird" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1280"><g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"><path id="birdPath" stroke-width="50" stroke="#666666" fill="transparent" stroke-dasharray="2500,2500" stroke-opacity="0"/></g>
       </svg>
     </div>
     <div class="fixed">
-      <svg id="parkMap" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 600 600">
+      <svg id="parkMap" width="500" height="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
       </svg>
     </div>
     <div class="fixed">
-      <svg id="tsne" width="0" height="0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 600 600">
+      <svg id="tsne" width="0" height="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
       </svg>
     </div>
     <div class="idxContainer">
@@ -116,7 +116,7 @@
         .append("path")
         .attr("d", (d) => d.path)
         .attr("id", (d) => d.edge)
-        .attr("stroke_width", "2")
+        .attr("stroke-width", "2")
         .attr("stroke", "#CDCDCD")
         .attr("fill", "transparent");
       };
@@ -205,7 +205,6 @@
     }
     let handleNodeMouseout = (d) => {
       map_svg.select("#mapNodeMouse-" + d.node).remove();
-
     };
 
     let handleLegendMouseover = (d) => {
@@ -405,8 +404,41 @@
       .append("div")
       .attr("class", "tsneVisitDropdown")
       .on('change', () => {
+        tsne_selection.select("#tsneMapTrace").html("");
         visit_path = dt_dict[d.id + '-' + tsne_selection.select('select').property('value')];
-        console.log(visit_path);
+        for (i in [...Array(visit_path.length - 1).keys()]) {
+          // path_name = gate_lbl[visit_path[i]["g"]] + "_" + gate_lbl[visit_path[parseInt(i)+1]["g"]];
+          path_name = visit_path[i]["g"] + "-" + visit_path[parseInt(i)+1]["g"];
+          path_name = path_dict[path_name];
+          tsne_map_trace
+          .append("path")
+          .attr("d", map_path_dict[path_name])
+          .attr("id", "p" + path_name)
+          .attr("stroke-width", "3")
+          .attr("stroke-opacity", "0.5")
+          .attr("stroke", inferno_color_256[Math.floor(parseInt(i) / (visit_path.length - 1) * 256)])
+          .attr("fill", "transparent")
+          .attr("transform", "translate(" + (Math.random() * 6 - 3) + "," + (Math.random() * 6 - 3) + ")");
+        }
+
+        tsne_selection.select("#tsnePathTable").remove();
+
+        tsne_path_table = tsne_selection
+        .append("table")
+        .attr("id", "tsnePathTable")
+        .attr("class", "lightable-paper")
+        .attr("style", "margin-top: -250pt; margin-left: 300pt;");
+  
+        tsne_path_table_thead_tr = tsne_path_table.append("thead").append("tr");
+        tsne_path_table_thead_tr.append("th").html("Timestamp");
+        tsne_path_table_thead_tr.append("th").html("Stop");
+        tsne_path_table_tbody = tsne_path_table.append("tbody");
+  
+        for (i in visit_path) {
+          tsne_path_table_tbody_tr = tsne_path_table_tbody.append("tr");
+          tsne_path_table_tbody_tr.append("td").html(visit_path[i]["t"]);
+          tsne_path_table_tbody_tr.append("td").html(gate_lbl[visit_path[i]["g"]]);
+        }
       });
       tsne_visit_dropdown
       .append("label")
@@ -425,39 +457,88 @@
         .html(dt_time_dict[d.id][i]['t']);
       }
 
-
-      tsne_map_svg = tsne_selection.append("svg")
+      tsne_map_svg = tsne_selection.append("div").append("svg")
       .attr("id", "tsnePathPlot")
-      .attr("width", "500")
-      .attr("height", "500")
+      .attr("width", "300")
+      .attr("height", "300")
       .attr("xmlns", "http://www.w3.org/2000/svg")
-      .attr("viewbox", "0 0 600 600");
+      .attr("viewBox", "0 0 600 600");
 
       tsne_map_svg.append("g")
-        .attr("id", "mapPaths")
+        .attr("id", "tsneMapPaths")
         .selectAll('path')
         .data(map_path_data)
         .enter()
         .append("path")
         .attr("d", (d) => d.path)
         .attr("id", (d) => "p" + d.edge)
-        .attr("stroke_width", "2")
+        .attr("stroke-width", "2")
         .attr("stroke", "#CDCDCD")
         .attr("fill", "transparent");
+
+      tsne_map_svg
+        .append("g")
+        .attr("id", "tsneMapNodes")
+        .selectAll('circle')
+        .data(map_node_data)
+        .enter()
+        .append("circle")
+        .attr("cx", (d) => d.cx)
+        .attr("cy", (d) => d.cy)
+        .attr("id", (d) => d.node)
+        .attr("r", "8")
+        .attr("fill", (d) => map_node_color_scale(d.t))
+        // .attr("fill-opacity", "0")
+        .attr("class", (d) => "mapNodeType" + d.t)
+        .on("mouseover", (d) => {
+          tsne_map_svg.append("text")
+          .attr("x", parseInt(d.cx) + 8)
+          .attr("y", parseInt(d.cy) + 3)
+          .attr("id", "tsneMapNodeMouse-" + d.node)
+          .attr("style", "font-size: 2em")
+          .text(d.node);
+        })
+        .on("mouseout", (d) => {
+          tsne_map_svg.select("#tsneMapNodeMouse-" + d.node).remove();
+        });
+
+      tsne_map_trace = tsne_map_svg
+        .append("g")
+        .attr("id", "tsneMapTrace");
 
       visit_path = dt_dict[d.id + '-0'];
       for (i in [...Array(visit_path.length - 1).keys()]) {
         // path_name = gate_lbl[visit_path[i]["g"]] + "_" + gate_lbl[visit_path[parseInt(i)+1]["g"]];
-        console.log(i);
         path_name = visit_path[i]["g"] + "-" + visit_path[parseInt(i)+1]["g"];
         path_name = path_dict[path_name];
-        highlighted_path.push(path_name);
-        tsne_map_svg.select("#mapPaths")
-          .select("#p" + path_name)
-          .attr("stroke", inferno_color_256[Math.floor(parseInt(i) / (visit_path.length - 1) * 256)])
-          .attr("transform", "translate(" + (Math.random() * 6 - 3) + "," + (Math.random() * 6 - 3) + ")");
-        tsne_map_svg.append("use").attr("xlink:href", "#p" + path_name);
+        tsne_map_trace
+        .append("path")
+        .attr("d", map_path_dict[path_name])
+        .attr("id", "p" + path_name)
+        .attr("stroke-width", "3")
+        .attr("stroke-opacity", "0.5")
+        .attr("stroke", inferno_color_256[Math.floor(parseInt(i) / (visit_path.length - 1) * 256)])
+        .attr("fill", "transparent")
+        .attr("transform", "translate(" + (Math.random() * 6 - 3) + "," + (Math.random() * 6 - 3) + ")");
       }
+
+      tsne_path_table = tsne_selection
+      .append("table")
+      .attr("id", "tsnePathTable")
+      .attr("class", "lightable-paper")
+      .attr("style", "margin-top: -250pt; margin-left: 280pt;");
+
+      tsne_path_table_thead_tr = tsne_path_table.append("thead").append("tr");
+      tsne_path_table_thead_tr.append("th").html("Timestamp");
+      tsne_path_table_thead_tr.append("th").html("Stop");
+      tsne_path_table_tbody = tsne_path_table.append("tbody");
+
+      for (i in visit_path) {
+        tsne_path_table_tbody_tr = tsne_path_table_tbody.append("tr");
+        tsne_path_table_tbody_tr.append("td").html(visit_path[i]["t"]);
+        tsne_path_table_tbody_tr.append("td").html(gate_lbl[visit_path[i]["g"]]);
+      }
+
     }
 
     // let handleTsneTimeChange = (d) => {
