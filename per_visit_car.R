@@ -126,7 +126,7 @@ daily_visitor %>%
     sd = sd(n)
   )
 
-tsne = jsonlite::read_json("docs/tsne.json")
+tsne = jsonlite::read_json("docs/tsne_jitter.json")
 
 aaa = map_df(tsne, ~tibble(x = .x$x, y = .x$y))
 
@@ -139,10 +139,38 @@ per_car_lite$x = round(per_car_lite$x, 2)
 per_car_lite$y = round(per_car_lite$y, 2)
 names(per_car_lite) = c("tp", "id", "v", "d", "ts", "gg",
                         "rs", "c", "rb", "g", "x", "y")
-jsonlite::write_json(per_car_lite, "per_car.json")
+per_car_lite = per_car_lite %>% ungroup() %>% sample_frac()
+
+per_car_lite_nongroup2p = per_car_lite %>%
+  filter(tp != "2P")
+
+per_car_lite = per_car_lite %>%
+  filter(tp == "2P") %>%
+  bind_rows(per_car_lite_nongroup2p)
+jsonlite::write_json(per_car_lite, "per_car3.json")
 
 per_visit = left_join(per_visit, per_car, by = c('car-type', 'car-id'))
 
 write_csv(per_visit, 'per_visit.csv')
 write_csv(per_car, 'per_car.csv')
+
+gates = sort(unique(dt$`gate-name`))
+gates_id = 1:length(gates) - 1
+
+gate_tbl = tibble(id = gates_id, lbl=gates)
+
+jsonlite::toJSON(gate_tbl$lbl, dataframe = "values")
+
+car_ids = sort(unique(dt$`car-id`))
+
+jsonlite::toJSON(car_ids, dataframe = "values")
+dt %>%
+  mutate(g = as.integer(factor(`gate-name`)) - 1,
+         # i = as.integer(factor(`car-id`)) - 1
+         i = `car-id`
+         ) %>%
+  select(i, Timestamp, g, visit) %>%
+  rename(t = Timestamp,  v = visit) %>%
+  jsonlite::write_json("dtlite.json")
+write_csv()
 
