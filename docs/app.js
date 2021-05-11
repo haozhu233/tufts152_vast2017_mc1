@@ -236,6 +236,7 @@ let showTSNE = () => {
   if (tsne_svg.select("#tsneDots").empty()) {
     tsne_svg.append("g")
       .attr("id", "tsneDots")
+      .attr("transform", "")
       .attr("fill-opacity", "0")
       .selectAll("circle").data(per_car).enter()
       .append("circle")
@@ -366,22 +367,7 @@ let handleTsneClick = (d) => {
   .append("div")
   .attr("class", "tsneVisitDropdown")
   .on('change', () => {
-    tsne_modal.select("#tsneMapTrace").html("");
-    visit_path = dt_dict[d.id + '-' + tsne_modal.select('select').property('value')];
-    for (i in [...Array(visit_path.length - 1).keys()]) {
-      // path_name = gate_lbl[visit_path[i]["g"]] + "_" + gate_lbl[visit_path[parseInt(i)+1]["g"]];
-      path_name = visit_path[i]["g"] + "-" + visit_path[parseInt(i)+1]["g"];
-      path_name = path_dict[path_name];
-      tsne_map_trace
-      .append("path")
-      .attr("d", map_path_dict[path_name])
-      .attr("id", "p" + path_name)
-      .attr("stroke-width", "3")
-      .attr("stroke-opacity", "0.5")
-      .attr("stroke", inferno_color_256[Math.floor(parseInt(i) / (visit_path.length - 1) * 256)])
-      .attr("fill", "transparent")
-      .attr("transform", "translate(" + (Math.random() * 6 - 3) + "," + (Math.random() * 6 - 3) + ")");
-    }
+    updateRecordTrace(tsne_modal, d.id + '-' + tsne_modal.select('select').property('value'))
 
     tsne_modal.select("#tsnePathTable").remove();
 
@@ -429,70 +415,8 @@ let handleTsneClick = (d) => {
     .html(dt_time_dict[d.id][i]['t']);
   }
 
-  tsne_map_svg = tsne_modal.append("div").append("svg")
-  .attr("id", "tsnePathPlot")
-  .attr("width", "400")
-  .attr("height", "400")
-  .attr("xmlns", "http://www.w3.org/2000/svg")
-  .attr("viewBox", "0 0 600 600");
-
-  tsne_map_svg.append("g")
-    .attr("id", "tsneMapPaths")
-    .selectAll('path')
-    .data(map_path_data)
-    .enter()
-    .append("path")
-    .attr("d", (d) => d.path)
-    .attr("id", (d) => "p" + d.edge)
-    .attr("stroke-width", "2")
-    .attr("stroke", "#CDCDCD")
-    .attr("fill", "transparent");
-
-  tsne_map_svg
-    .append("g")
-    .attr("id", "tsneMapNodes")
-    .selectAll('circle')
-    .data(map_node_data)
-    .enter()
-    .append("circle")
-    .attr("cx", (d) => d.cx)
-    .attr("cy", (d) => d.cy)
-    .attr("id", (d) => d.node)
-    .attr("r", "8")
-    .attr("fill", (d) => map_node_color_scale(d.t))
-    // .attr("fill-opacity", "0")
-    .attr("class", (d) => "mapNodeType" + d.t)
-    .on("mouseover", (d) => {
-      tsne_map_svg.append("text")
-      .attr("x", parseInt(d.cx) + 8)
-      .attr("y", parseInt(d.cy) + 3)
-      .attr("id", "tsneMapNodeMouse-" + d.node)
-      .attr("style", "font-size: 2em")
-      .text(d.node);
-    })
-    .on("mouseout", (d) => {
-      tsne_map_svg.select("#tsneMapNodeMouse-" + d.node).remove();
-    });
-
-  tsne_map_trace = tsne_map_svg
-    .append("g")
-    .attr("id", "tsneMapTrace");
-
-  visit_path = dt_dict[d.id + '-0'];
-  for (i in [...Array(visit_path.length - 1).keys()]) {
-    // path_name = gate_lbl[visit_path[i]["g"]] + "_" + gate_lbl[visit_path[parseInt(i)+1]["g"]];
-    path_name = visit_path[i]["g"] + "-" + visit_path[parseInt(i)+1]["g"];
-    path_name = path_dict[path_name];
-    tsne_map_trace
-    .append("path")
-    .attr("d", map_path_dict[path_name])
-    .attr("id", "p" + path_name)
-    .attr("stroke-width", "3")
-    .attr("stroke-opacity", "0.5")
-    .attr("stroke", inferno_color_256[Math.floor(parseInt(i) / (visit_path.length - 1) * 256)])
-    .attr("fill", "transparent")
-    .attr("transform", "translate(" + (Math.random() * 6 - 3) + "," + (Math.random() * 6 - 3) + ")");
-  }
+  var tsne_map_svg = showRecordMap(tsne_modal);
+  updateRecordTrace(tsne_map_svg, d.id + "-0");
 
   tsne_path_table = tsne_modal
   .append("table")
@@ -530,18 +454,288 @@ let handleTableMapOut = (d) => {
   tsne_selection.select("#" + gate_lbl[d.g]).attr("r", "8");
 }
 
-// let handleTsneTimeChange = (d) => {
-//   selectValue = tsne_selection.select('select').property('value');
-//   console.log(d)
+let highlight_point = (id, boxX, boxY) => {
 
-//   tsne_selection.append("div").html(selectValue);
-// }
+}
 
+let showRecordMap = (loc_node, width="400") => {
+  var tsne_map_svg = loc_node.append("svg")
+  .attr("width", width)
+  // .attr("height", height)
+  .attr("xmlns", "http://www.w3.org/2000/svg")
+  .attr("viewBox", "0 0 600 600");
+
+  tsne_map_svg.append("g")
+    .selectAll('path')
+    .data(map_path_data)
+    .enter()
+    .append("path")
+    .attr("d", (d) => d.path)
+    .attr("id", (d) => "p" + d.edge)
+    .attr("stroke-width", "2")
+    .attr("stroke", "#CDCDCD")
+    .attr("fill", "transparent");
+
+  tsne_map_svg
+    .append("g")
+    .selectAll('circle')
+    .data(map_node_data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => d.cx)
+    .attr("cy", (d) => d.cy)
+    .attr("id", (d) => d.node)
+    .attr("r", "8")
+    .attr("fill", (d) => map_node_color_scale(d.t))
+    // .attr("fill-opacity", "0")
+    .attr("class", (d) => "mapNodeType" + d.t)
+    .on("mouseover", (d) => {
+      tsne_map_svg.append("text")
+      .attr("x", parseInt(d.cx) + 8)
+      .attr("y", parseInt(d.cy) + 3)
+      .attr("id", "tsneMapNodeMouse-" + d.node)
+      .attr("style", "font-size: 2em")
+      .text(d.node);
+    })
+    .on("mouseout", (d) => {
+      tsne_map_svg.select("#tsneMapNodeMouse-" + d.node).remove();
+    });
+
+  tsne_map_svg
+    .append("g")
+    .attr("id", "tsneMapTrace");
+
+  return(tsne_map_svg)
+}
+
+let updateRecordTrace = (map_svg, id) => {
+  var tsne_map_trace = map_svg.select("#tsneMapTrace");
+
+  tsne_map_trace.html("");
+
+  visit_path = dt_dict[id];
+  for (i in [...Array(visit_path.length - 1).keys()]) {
+    // path_name = gate_lbl[visit_path[i]["g"]] + "_" + gate_lbl[visit_path[parseInt(i)+1]["g"]];
+    path_name = visit_path[i]["g"] + "-" + visit_path[parseInt(i)+1]["g"];
+    path_name = path_dict[path_name];
+    tsne_map_trace
+    .append("path")
+    .attr("d", map_path_dict[path_name])
+    .attr("id", "p" + path_name)
+    .attr("stroke-width", "3")
+    .attr("stroke-opacity", "0.5")
+    .attr("stroke", inferno_color_256[Math.floor(parseInt(i) / (visit_path.length - 1) * 256)])
+    .attr("fill", "transparent")
+    .attr("transform", "translate(" + (Math.random() * 6 - 3) + "," + (Math.random() * 6 - 3) + ")");
+  }
+  return(tsne_map_trace)
+}
+
+let showRecordSummary = (loc_node, id, vid, tp) => {
+  var record_summary = loc_node.append("div");
+
+  var record_dt = dt_dict[id + "-" + vid];
+
+  start_time = new Date(record_dt[0]["t"]);
+  end_time = new Date(record_dt[record_dt.length - 1]["t"]);
+
+  record_summary.html(
+    "<strong>ID:</strong> " + id + "<br>" 
+    + "<strong>Type:</strong> " + vehicle_type_dict[tp] + "<br>"
+    + "<strong>Date:</strong> " + start_time.toDateString() + "<br>"
+    + "<strong>Duration:</strong> " + ((end_time - start_time) / 3600000).toFixed(2) + " hr"
+  );
+  return(record_summary)
+}
+
+let zoomPasserby = () => {
+  tsne_passerby_marker = tsne_svg
+    .append("g")
+    .attr("id", "passerbyMarker");
+
+  tsne_passerby_marker_enter = tsne_passerby_marker
+    .selectAll('label')
+    .data(passerby_samples)
+    .enter();
+
+  tsne_passerby_marker_enter
+    .append("text")
+    .attr("x", (d) => tsne_x(d.lx))
+    .attr("y", (d) => tsne_x(d.ly - 1))
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text((d) => d.lbl);
+
+  tsne_passerby_marker_enter
+    .append("line")
+    .attr("x1", (d) => tsne_x(d.x))
+    .attr("x2", (d) => tsne_x(d.lx))
+    .attr("y1", (d) => tsne_y(d.y))
+    .attr("y2", (d) => tsne_y(d.ly))
+    .attr("stroke", "black");
+
+  tsne_passerby_marker
+    .transition()
+    .duration(500)
+    .attr("transform", "translate(-250,-600),scale(2,2)");
+
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("fill-opacity", "0.5")
+    .attr("transform", "translate(-250,-600),scale(2,2)");
+
+
+}
+
+let unzoomPasserby = () => {
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("transform", "");
+  tsne_svg.select("#passerbyMarker").remove();
+}
+
+let zoomDayvisitor = () => {
+  tsne_dayvisitor_marker = tsne_svg
+    .append("g")
+    .attr("id", "dayvisitorMarker");
+
+  tsne_dayvisitor_marker_enter = tsne_dayvisitor_marker
+    .selectAll('label')
+    .data(dayvisitor_samples)
+    .enter();
+
+  tsne_dayvisitor_marker_enter
+    .append("text")
+    .attr("x", (d) => tsne_x(d.lx))
+    .attr("y", (d) => tsne_x(d.ly - 1))
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text((d) => d.lbl);
+
+  tsne_dayvisitor_marker_enter
+    .append("line")
+    .attr("x1", (d) => tsne_x(d.x))
+    .attr("x2", (d) => tsne_x(d.lx))
+    .attr("y1", (d) => tsne_y(d.y))
+    .attr("y2", (d) => tsne_y(d.ly))
+    .attr("stroke", "black");
+
+  tsne_dayvisitor_marker
+    .transition()
+    .duration(500)
+    .attr("transform", "translate(-500,-200),scale(2,2)");
+
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("fill-opacity", "0.5")
+    .attr("transform", "translate(-500,-200),scale(2,2)");
+
+
+}
+
+let unzoomDayvisitor = () => {
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("transform", "");
+  tsne_svg.select("#dayvisitorMarker").remove();
+}
+
+
+let zoomWeekendCamper = () => {
+  tsne_weekendcamper_marker = tsne_svg
+    .append("g")
+    .attr("id", "weekendcamperMarker");
+
+  tsne_weekendcamper_marker_enter = tsne_weekendcamper_marker
+    .selectAll('label')
+    .data(weekendcamper_samples)
+    .enter();
+
+  tsne_weekendcamper_marker_enter
+    .append("text")
+    .attr("x", (d) => tsne_x(d.lx - 2))
+    .attr("y", (d) => tsne_x(d.ly))
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text((d) => d.lbl);
+
+  tsne_weekendcamper_marker_enter
+    .append("line")
+    .attr("x1", (d) => tsne_x(d.x))
+    .attr("x2", (d) => tsne_x(d.lx))
+    .attr("y1", (d) => tsne_y(d.y))
+    .attr("y2", (d) => tsne_y(d.ly))
+    .attr("stroke", "black");
+
+  tsne_weekendcamper_marker
+    .transition()
+    .duration(500)
+    .attr("transform", "translate(0,-400),scale(2,2)");
+
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("fill-opacity", "0.5")
+    .attr("transform", "translate(0,-400),scale(2,2)");
+
+
+}
+
+let unzoomWeekendCamper = () => {
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("transform", "");
+  tsne_svg.select("#weekendcamperMarker").remove();
+}
 
 
 showBird();
 showCarCounts();
 
+var passerby1 = showRecordMap(d3.select("#passerby1"), "100%");
+updateRecordTrace(passerby1, passerby_samples[0]['id'] + "-0");
+showRecordSummary(d3.select("#passerby1"), passerby_samples[0]['id'], "0", passerby_samples[0]['tp']);
+var passerby2 = showRecordMap(d3.select("#passerby2"), "100%");
+updateRecordTrace(passerby2, passerby_samples[1]['id'] + "-0");
+showRecordSummary(d3.select("#passerby2"), passerby_samples[1]['id'], "0", passerby_samples[1]['tp']);
+var passerby3 = showRecordMap(d3.select("#passerby3"), "100%");
+updateRecordTrace(passerby3, passerby_samples[2]['id'] + "-0");
+showRecordSummary(d3.select("#passerby3"), passerby_samples[2]['id'], "0", passerby_samples[2]['tp']);
+
+var dayvisitor1 = showRecordMap(d3.select("#dayvisitor1"), "100%");
+updateRecordTrace(dayvisitor1, dayvisitor_samples[0]['id'] + "-0");
+showRecordSummary(d3.select("#dayvisitor1"), dayvisitor_samples[0]['id'], "0", dayvisitor_samples[0]['tp']);
+var dayvisitor2 = showRecordMap(d3.select("#dayvisitor2"), "100%");
+updateRecordTrace(dayvisitor2, dayvisitor_samples[1]['id'] + "-0");
+showRecordSummary(d3.select("#dayvisitor2"), dayvisitor_samples[1]['id'], "0", dayvisitor_samples[1]['tp']);
+var dayvisitor3 = showRecordMap(d3.select("#dayvisitor3"), "100%");
+updateRecordTrace(dayvisitor3, dayvisitor_samples[2]['id'] + "-0");
+showRecordSummary(d3.select("#dayvisitor3"), dayvisitor_samples[2]['id'], "0", dayvisitor_samples[2]['tp']);
+
+var weekendcamper1 = showRecordMap(d3.select("#weekendcamper1"), "100%");
+updateRecordTrace(weekendcamper1, weekendcamper_samples[0]['id'] + "-0");
+showRecordSummary(d3.select("#weekendcamper1"), weekendcamper_samples[0]['id'], "0", weekendcamper_samples[0]['tp']);
+var weekendcamper2 = showRecordMap(d3.select("#weekendcamper2"), "100%");
+updateRecordTrace(weekendcamper2, weekendcamper_samples[1]['id'] + "-0");
+showRecordSummary(d3.select("#weekendcamper2"), weekendcamper_samples[1]['id'], "0", weekendcamper_samples[1]['tp']);
+var weekendcamper3 = showRecordMap(d3.select("#weekendcamper3"), "100%");
+updateRecordTrace(weekendcamper3, weekendcamper_samples[2]['id'] + "-0");
+showRecordSummary(d3.select("#weekendcamper3"), weekendcamper_samples[2]['id'], "0", weekendcamper_samples[2]['tp']);
+
+var longcamper1 = showRecordMap(d3.select("#longcamper1"), "100%");
+updateRecordTrace(longcamper1, longcamper_samples[0]['id'] + "-0");
+showRecordSummary(d3.select("#longcamper1"), longcamper_samples[0]['id'], "0", longcamper_samples[0]['tp']);
+var longcamper2 = showRecordMap(d3.select("#longcamper2"), "100%");
+updateRecordTrace(longcamper2, longcamper_samples[1]['id'] + "-0");
+showRecordSummary(d3.select("#longcamper2"), longcamper_samples[1]['id'], "0", longcamper_samples[1]['tp']);
+var longcamper3 = showRecordMap(d3.select("#longcamper3"), "100%");
+updateRecordTrace(longcamper3, longcamper_samples[2]['id'] + "-0");
+showRecordSummary(d3.select("#longcamper3"), longcamper_samples[2]['id'], "0", longcamper_samples[2]['tp']);
 
 //waypoints scroll constructor
 function scroll(n, offset, funcList1, funcList2){
@@ -570,4 +764,13 @@ new scroll('intro', '50%',
 new scroll('pattern', '50%', 
   [hideMap, hideMapNodes, showTSNE],
   [showMap, showMapNodes, hideTSNE]);
+new scroll('passerby', '50%', 
+  [zoomPasserby],
+  [unzoomPasserby]);
+new scroll('dayvisitor', '50%', 
+  [unzoomPasserby, zoomDayvisitor],
+  [unzoomDayvisitor, zoomPasserby]);
+new scroll('weekendcamper', '50%', 
+  [unzoomDayvisitor, zoomWeekendCamper],
+  [unzoomWeekendCamper, zoomDayvisitor]);
 // new scroll('div6', '75%', barChart, divide);

@@ -4,7 +4,7 @@
   <script src="d3.v3.min.js"></script>
   <script src="noframework.waypoints.js"></script>
   <link rel="stylesheet" href="styles.css">
-  <!--   <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"> -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
 </head>
 
 <body>
@@ -59,11 +59,76 @@
         <section id="pattern">
           <h2>Patterns of life</h2>
           <h3>t-SNE</h3>
-          <p>We start with extracting a set of features for each unique vehicles. These features include number of visits (each visit is defined as the interval between two entries at entrances), total duration of visits, total number of times crossing entrances, camping zones, gates, general gates and ranger stops/base. Then we use t-SNE to reduce the dimension for visualization. In the t-SNE plot, similar patterns of activities are clustered together into groups. Irregular activities are displayed as outliers. </p>
+          <p>We start with extracting a set of features for each unique vehicles. These features include number of visits (each visit is defined as the interval between two entries at entrances), total duration of visits, total number of times crossing entrances, camping zones, gates, general gates and ranger stops/base. Then we use t-SNE to reduce the dimension for visualization. In the t-SNE plot, similar patterns of activities are clustered together into groups. Irregular activities are displayed as outliers. <br><strong style="color:#31688EFF"><i class="fa fa-hand-pointer-o"></i> Click each point to explore! <i class="fa fa-hand-pointer-o"></i><i class="fa fa-times"></i>2 double click to close.</strong></p>
+
           <br>
-          <p>This plot is interactive! You can either look into bigger clusters to generate sense of the activity patterns of this bigger group, or look into outliers and try to catch potential bad guys!</p>
-          <br>
+
+          <p>By utilizing the t-SNE plot, we found that there are several different patterns of life. </p>
+
+          <ul>
+            <li>- Passerby</li>
+            <li>- Day Visitor</li>
+            <li>- Day/Weekend Camper</li>
+            <li>- Week Camper</li>
+            <li>- Forever Camper</li>
+            <li>- Frequent Camper</li>
+          </ul>
           <div id="tsneSelection"></div>
+        </section>
+        <section id="passerby">
+          <h3>Passerby</h3>
+          <p>Passerbys are the type of visitors who literally drove through the park without visiting any camping facilities. They usually enter the park from one entrance, exit from another and spent less the one hour in the park.</p>
+          <p>Here we define this type of visitors as: 1. Enter and exit from different entrances; 2. Never visited any camping zones. 
+          <p>You can find several clusters in the t-SNE plot corresponding to this pattern. Here is one example. You can find several other clusters with different common paths across the plot.</p>
+          <div class="row">
+            <div class="column" id="passerby1"><div style="text-align: center;"><strong>A</strong></div></div>
+            <div class="column" id="passerby2"><div style="text-align: center;"><strong>B</strong></div></div>
+            <div class="column" id="passerby3"><div style="text-align: center;"><strong>C</strong></div></div>
+          </div>
+        </section>
+
+        <section id="dayvisitor">
+          <h3>Day Visitor</h3>
+          <p>Day Visitors are those who came to the park, spent a day and left without staying overnight. They may or may not visit a camping ground. </p>
+          <p>Here we define this type of visitors as: 1. No stay overnight; 2. Not a passerby. </p>
+          <p>Here are a few examples.</p>
+          <div class="row">
+            <div class="column" id="dayvisitor1"><div style="text-align: center;"><strong>A</strong></div></div>
+            <div class="column" id="dayvisitor2"><div style="text-align: center;"><strong>B</strong></div></div>
+            <div class="column" id="dayvisitor3"><div style="text-align: center;"><strong>C</strong></div></div>
+          </div>
+        </section>
+
+        <section id="weekendcamper">
+          <h3>Day/Weekend Camper</h3>
+          <p>A lot of visitors chose to spend a day or a weekend in the camping zone. </p>
+          <p>Here we define this type of camper as people who: 1. visited one time 2. spent less than 60.0 hours (2 whole days + 1 half day) in the park in a single visit. </p>
+          <p>There are several clusters full of this type of visitors. Here is an example</p>
+          <div class="row">
+            <div class="column" id="weekendcamper1"><div style="text-align: center;"><strong>A</strong></div></div>
+            <div class="column" id="weekendcamper2"><div style="text-align: center;"><strong>B</strong></div></div>
+            <div class="column" id="weekendcamper3"><div style="text-align: center;"><strong>C</strong></div></div>
+          </div>
+        </section>
+
+        <section id="longcamper">
+          <h3>Long-time Camper</h3>
+          <p>Here we define this type of camper as people who: 1. visited one time 2. spent more than 60.0 hours (2 whole days + 1 half day) but less than 1 month in the park in a single visit. </p>
+          <p>Here are some examples</p>
+          <div class="row">
+            <div class="column" id="longcamper1"><div style="text-align: center;"><strong>A</strong></div></div>
+            <div class="column" id="longcamper2"><div style="text-align: center;"><strong>B</strong></div></div>
+            <div class="column" id="longcamper3"><div style="text-align: center;"><strong>C</strong></div></div>
+          </div>
+        </section>
+
+        <section id="forevercamper">
+          <h3>Forever Camper</h3>
+          <p>There is one single guy staying in the park for a whole year. </p>
+          <p>Here are some examples</p>
+          <div class="row">
+            <div class="column" id="weekcamper1"><div style="text-align: center;"><strong>A</strong></div></div>
+          </div>
         </section>
 
       </div>
