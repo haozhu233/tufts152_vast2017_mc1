@@ -173,3 +173,7 @@ p{
   width: 31%;
   display: inline-block;
 }
+.column2 {
+  width: 50%;
+  display: inline-block;
+}

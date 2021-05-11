@@ -227,7 +227,17 @@ var tsne_z = d3.scale.ordinal()
   .range(viridis_color_7)
   .domain(["1", "2", "3", "4", "5", "6", "2P"]);
 
+let updateTSNEidx = () => {
+  d3.select("#idx-intro")
+  .attr("style", "cursor: pointer; background-color: white;");
+  d3.select("#idx-pattern")
+  .attr("style", "cursor: pointer; background-color: black;");
+  d3.select("#idx-pb")
+  .attr("style", "cursor: pointer; background-color: white;");
+}
+
 let showTSNE = () => {
+  updateTSNEidx();
   if (tsne_svg.attr("width") == "0") {
     tsne_svg
     .attr("width", "500")
@@ -284,10 +294,6 @@ let showTSNE = () => {
   .duration(800)
   .attr("opacity", "1.0")
   .attr("fill-opacity", "1.0")
-  d3.select("#idx-pattern")
-  .attr("style", "cursor: pointer; background-color: black;")
-  d3.select("#idx-intro")
-  .attr("style", "cursor: pointer; background-color: white;")
 }
 
 let hideTSNE = () => {
@@ -454,10 +460,6 @@ let handleTableMapOut = (d) => {
   tsne_selection.select("#" + gate_lbl[d.g]).attr("r", "8");
 }
 
-let highlight_point = (id, boxX, boxY) => {
-
-}
-
 let showRecordMap = (loc_node, width="400") => {
   var tsne_map_svg = loc_node.append("svg")
   .attr("width", width)
@@ -531,6 +533,31 @@ let updateRecordTrace = (map_svg, id) => {
   return(tsne_map_trace)
 }
 
+let showTraceSelector = (loc_node, id) => {
+  visit_dropdown = loc_node
+    .append("div")
+    .attr("class", "visitDropdown")
+    .on('change', () => {
+      updateRecordTrace(loc_node, id + '-' + loc_node.select('select').property('value'))
+    });
+  visit_dropdown
+    .append("label")
+    .attr("for", "visit")
+    .html("Visit: ");
+
+  visit_dropdown_choices = visit_dropdown
+    .append("select")
+    .attr("name", "visit")
+    .attr("id", "visit");
+
+  for (i in dt_time_dict[id]) {
+    visit_dropdown_choices
+      .append("option")
+      .attr("value", dt_time_dict[id][i]['v'])
+      .html(dt_time_dict[id][i]['t']);
+  }
+}
+
 let showRecordSummary = (loc_node, id, vid, tp) => {
   var record_summary = loc_node.append("div");
 
@@ -544,6 +571,25 @@ let showRecordSummary = (loc_node, id, vid, tp) => {
     + "<strong>Type:</strong> " + vehicle_type_dict[tp] + "<br>"
     + "<strong>Date:</strong> " + start_time.toDateString() + "<br>"
     + "<strong>Duration:</strong> " + ((end_time - start_time) / 3600000).toFixed(2) + " hr"
+  );
+  return(record_summary)
+}
+
+let showMultiRecordSummary = (loc_node, id, tp) => {
+  var record_summary = loc_node.append("div");
+
+  var all_records = dt_time_dict[id];
+
+
+  start_date = new Date(all_records[0]["t"]);
+  end_date = new Date(all_records[all_records.length - 1]["t"]);
+
+  record_summary.html(
+    "<strong>ID:</strong> " + id + "<br>" 
+    + "<strong>Type:</strong> " + vehicle_type_dict[tp] + "<br>"
+    + "<strong># of Visits:</strong> " + all_records.length + "<br>"
+    + "<strong>Date Range:</strong> " + start_date.toDateString() + " to " 
+    + end_date.toDateString()
   );
   return(record_summary)
 }
@@ -585,6 +631,12 @@ let zoomPasserby = () => {
     .attr("fill-opacity", "0.5")
     .attr("transform", "translate(-250,-600),scale(2,2)");
 
+  d3.select("#idx-pattern")
+  .attr("style", "cursor: pointer; background-color: white;")
+  d3.select("#idx-pb")
+  .attr("style", "cursor: pointer; background-color: black;")
+  d3.select("#idx-dv")
+  .attr("style", "cursor: pointer; background-color: white;")
 
 }
 
@@ -633,7 +685,12 @@ let zoomDayvisitor = () => {
     .attr("fill-opacity", "0.5")
     .attr("transform", "translate(-500,-200),scale(2,2)");
 
-
+  d3.select("#idx-pb")
+  .attr("style", "cursor: pointer; background-color: white;")
+  d3.select("#idx-dv")
+  .attr("style", "cursor: pointer; background-color: black;")
+  d3.select("#idx-wc")
+  .attr("style", "cursor: pointer; background-color: white;")
 }
 
 let unzoomDayvisitor = () => {
@@ -682,6 +739,12 @@ let zoomWeekendCamper = () => {
     .attr("fill-opacity", "0.5")
     .attr("transform", "translate(0,-400),scale(2,2)");
 
+  d3.select("#idx-dv")
+  .attr("style", "cursor: pointer; background-color: white;")
+  d3.select("#idx-wc")
+  .attr("style", "cursor: pointer; background-color: black;")
+  d3.select("#idx-lc")
+  .attr("style", "cursor: pointer; background-color: white;")
 
 }
 
@@ -691,6 +754,163 @@ let unzoomWeekendCamper = () => {
     .duration(500)
     .attr("transform", "");
   tsne_svg.select("#weekendcamperMarker").remove();
+}
+
+let zoomLongCamper = () => {
+  tsne_longcamper_marker = tsne_svg
+    .append("g")
+    .attr("id", "longcamperMarker");
+
+  tsne_longcamper_marker_enter = tsne_longcamper_marker
+    .selectAll('label')
+    .data(longcamper_samples)
+    .enter();
+
+  tsne_longcamper_marker_enter
+    .append("text")
+    .attr("x", (d) => tsne_x(d.lx - 2))
+    .attr("y", (d) => tsne_x(d.ly))
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text((d) => d.lbl);
+
+  tsne_longcamper_marker_enter
+    .append("line")
+    .attr("x1", (d) => tsne_x(d.x))
+    .attr("x2", (d) => tsne_x(d.lx))
+    .attr("y1", (d) => tsne_y(d.y))
+    .attr("y2", (d) => tsne_y(d.ly))
+    .attr("stroke", "black");
+
+  tsne_longcamper_marker
+    .transition()
+    .duration(500)
+    .attr("transform", "translate(-500,-100),scale(2,2)");
+
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("fill-opacity", "0.5")
+    .attr("transform", "translate(-500,-100),scale(2,2)");
+
+  d3.select("#idx-wc")
+  .attr("style", "cursor: pointer; background-color: white;")
+  d3.select("#idx-lc")
+  .attr("style", "cursor: pointer; background-color: black;")
+  d3.select("#idx-mc")
+  .attr("style", "cursor: pointer; background-color: white;")
+}
+
+let unzoomLongCamper = () => {
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("transform", "");
+  tsne_svg.select("#longcamperMarker").remove();
+}
+
+let zoomMultiCamper = () => {
+  tsne_multicamper_marker = tsne_svg
+    .append("g")
+    .attr("id", "multicamperMarker");
+
+  tsne_multicamper_marker_enter = tsne_multicamper_marker
+    .selectAll('label')
+    .data(multicamper_samples)
+    .enter();
+
+  tsne_multicamper_marker_enter
+    .append("text")
+    .attr("x", (d) => tsne_x(d.lx + 1))
+    .attr("y", (d) => tsne_x(d.ly + 1))
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text((d) => d.lbl);
+
+  tsne_multicamper_marker_enter
+    .append("line")
+    .attr("x1", (d) => tsne_x(d.x))
+    .attr("x2", (d) => tsne_x(d.lx))
+    .attr("y1", (d) => tsne_y(d.y))
+    .attr("y2", (d) => tsne_y(d.ly))
+    .attr("stroke", "black");
+
+  tsne_multicamper_marker
+    .transition()
+    .duration(500)
+    .attr("transform", "translate(0, -200),scale(2,2)");
+
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("fill-opacity", "0.5")
+    .attr("transform", "translate(0, -200),scale(2,2)");
+
+  d3.select("#idx-lc")
+  .attr("style", "cursor: pointer; background-color: white;")
+  d3.select("#idx-mc")
+  .attr("style", "cursor: pointer; background-color: black;")
+  d3.select("#idx-fc")
+  .attr("style", "cursor: pointer; background-color: white;")
+}
+
+let unzoomMultiCamper = () => {
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("transform", "");
+  tsne_svg.select("#multicamperMarker").remove();
+}
+
+let zoomForeverCamper = () => {
+  tsne_forevercamper_marker = tsne_svg
+    .append("g")
+    .attr("id", "forevercamperMarker");
+
+  tsne_forevercamper_marker_enter = tsne_forevercamper_marker
+    .selectAll('label')
+    .data(forevercamper_samples)
+    .enter();
+
+  tsne_forevercamper_marker_enter
+    .append("text")
+    .attr("x", (d) => tsne_x(d.lx + 2))
+    .attr("y", (d) => tsne_x(d.ly + 1))
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text((d) => d.lbl);
+
+  tsne_forevercamper_marker_enter
+    .append("line")
+    .attr("x1", (d) => tsne_x(d.x))
+    .attr("x2", (d) => tsne_x(d.lx))
+    .attr("y1", (d) => tsne_y(d.y))
+    .attr("y2", (d) => tsne_y(d.ly))
+    .attr("stroke", "black");
+
+  tsne_forevercamper_marker
+    .transition()
+    .duration(500)
+    .attr("transform", "translate(0, -200),scale(2,2)");
+
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("fill-opacity", "0.5")
+    .attr("transform", "translate(0,-200),scale(2,2)");
+
+  d3.select("#idx-mc")
+  .attr("style", "cursor: pointer; background-color: white;")
+  d3.select("#idx-fc")
+  .attr("style", "cursor: pointer; background-color: black;")
+}
+
+let unzoomForeverCamper = () => {
+  tsne_svg.select("#tsneDots")
+    .transition()
+    .duration(500)
+    .attr("transform", "");
+  tsne_svg.select("#forevercamperMarker").remove();
 }
 
 
@@ -737,6 +957,23 @@ var longcamper3 = showRecordMap(d3.select("#longcamper3"), "100%");
 updateRecordTrace(longcamper3, longcamper_samples[2]['id'] + "-0");
 showRecordSummary(d3.select("#longcamper3"), longcamper_samples[2]['id'], "0", longcamper_samples[2]['tp']);
 
+showTraceSelector(d3.select("#multicamper1"), multicamper_samples[0]['id']);
+var multicamper1 = showRecordMap(d3.select("#multicamper1"), "100%");
+updateRecordTrace(multicamper1, multicamper_samples[0]['id'] + "-0");
+showMultiRecordSummary(d3.select("#multicamper1"), multicamper_samples[0]['id'], multicamper_samples[0]['tp']);
+showTraceSelector(d3.select("#multicamper2"), multicamper_samples[1]['id']);
+var multicamper2 = showRecordMap(d3.select("#multicamper2"), "100%");
+updateRecordTrace(multicamper2, multicamper_samples[1]['id'] + "-0");
+showMultiRecordSummary(d3.select("#multicamper2"), multicamper_samples[1]['id'], multicamper_samples[1]['tp']);
+showTraceSelector(d3.select("#multicamper3"), multicamper_samples[2]['id']);
+var multicamper3 = showRecordMap(d3.select("#multicamper3"), "100%");
+updateRecordTrace(multicamper3, multicamper_samples[2]['id'] + "-0");
+showMultiRecordSummary(d3.select("#multicamper3"), multicamper_samples[2]['id'], multicamper_samples[2]['tp']);
+
+var forevercamper1 = showRecordMap(d3.select("#forevercamper1"), "100%");
+updateRecordTrace(forevercamper1, forevercamper_samples[0]['id'] + "-0");
+showRecordSummary(d3.select("#forevercamper1"), forevercamper_samples[0]['id'], "0", forevercamper_samples[0]['tp']);
+
 //waypoints scroll constructor
 function scroll(n, offset, funcList1, funcList2){
   return new Waypoint({
@@ -766,11 +1003,20 @@ new scroll('pattern', '50%',
   [showMap, showMapNodes, hideTSNE]);
 new scroll('passerby', '50%', 
   [zoomPasserby],
-  [unzoomPasserby]);
+  [unzoomPasserby, updateTSNEidx]);
 new scroll('dayvisitor', '50%', 
   [unzoomPasserby, zoomDayvisitor],
   [unzoomDayvisitor, zoomPasserby]);
 new scroll('weekendcamper', '50%', 
   [unzoomDayvisitor, zoomWeekendCamper],
   [unzoomWeekendCamper, zoomDayvisitor]);
+new scroll('longcamper', '50%', 
+  [unzoomWeekendCamper, zoomLongCamper],
+  [unzoomLongCamper, zoomWeekendCamper]);
+new scroll('multicamper', '50%', 
+  [unzoomLongCamper, zoomMultiCamper],
+  [unzoomMultiCamper, zoomLongCamper]);
+new scroll('forevercamper', '50%', 
+  [unzoomMultiCamper, zoomForeverCamper],
+  [unzoomForeverCamper, zoomMultiCamper]);
 // new scroll('div6', '75%', barChart, divide);
