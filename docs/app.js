@@ -288,7 +288,8 @@ let showTSNE = () => {
   tsne_svg.select("#tsneDots")
     .transition()
     .duration(800)
-    .attr("fill-opacity", "0.5");
+    .attr("fill-opacity", "0.5")
+    .attr("transform", "");
   tsne_svg.select("#tsneLegend")
   .transition()
   .duration(800)
